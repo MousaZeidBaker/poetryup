@@ -1,0 +1,45 @@
+# This workflow tests our package
+
+name: Test
+
+# controls when the action will run
+on:
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  publish_testpypi:
+    runs-on: ubuntu-latest
+    environment: testpypi
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install poetry 1.1.7
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.1.7
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Test
+        run: |
+          source $(poetry env info --path)/bin/activate # activate virtual environment
+          mypy tests
+
+      - name: Build
+        run: poetry build
+
+      - name: Publish testpypi dry-run
+        env:
+          POETRY_REPOSITORIES_TESTPYPI_URL: https://test.pypi.org/legacy/
+          POETRY_HTTP_BASIC_TESTPYPI_USERNAME: __token__
+          POETRY_HTTP_BASIC_TESTPYPI_PASSWORD: ${{secrets.TESTPYPI_API_TOKEN}}
+        run: poetry publish -r testpypi --dry-run

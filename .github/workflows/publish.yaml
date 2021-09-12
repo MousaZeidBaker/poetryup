@@ -32,7 +32,7 @@ jobs:
       - name: Test
         run: |
           source $(poetry env info --path)/bin/activate # activate virtual environment
-          mypy tests
+          pytest tests
 
       - name: Build
         run: poetry build
@@ -67,7 +67,7 @@ jobs:
       - name: Test
         run: |
           source $(poetry env info --path)/bin/activate # activate virtual environment
-          mypy tests
+          pytest tests
 
       - name: Build
         run: poetry build

@@ -9,7 +9,7 @@ python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "c52eff49bda1a8bc14eaf49e1883fbd2dab32a33ddbedfad2dfd47dc6c542a6c"
+content-hash = "21bd4c3fac1344a93cbcf46721d27bbdca0065f811afde1555c328e2a949d0e0"
 
 [metadata.files]
 toml = [

@@ -1,8 +1,11 @@
 [tool.poetry]
 name = "poetryup"
-version = "0.1.0"
+version = "0.2.0"
 description = "Run poetry update and bump versions in pyproject.toml file"
 authors = [ "Mousa Zeid Baker",]
+packages = [
+    { include = "poetryup"},
+]
 
 [tool.poetry.dependencies]
 python = "^3.6"
@@ -11,7 +14,11 @@ toml = "^0.10.2"
 [tool.poetry.dev-dependencies]
 
 [tool.poetry.scripts]
-poetryup = "poetryup.poetryup:poetryup"
+poetryup = "poetryup.poetryup:main"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^6.2.5"
+pytest-mock = "^3.6.1"
 
 [build-system]
 requires = [ "poetry-core>=1.0.0",]

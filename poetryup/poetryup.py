@@ -7,14 +7,33 @@ from pathlib import Path
 from typing import Dict, List
 
 import toml
-
-from . import utils
+from poetryup import utils
 
 
 @dataclass
 class Dependency:
     name: str
     version: str
+
+
+def _run_poetry_update() -> None:
+    """Run poetry update command
+    """
+
+    subprocess.run(['poetry', 'update'])
+
+
+def _run_poetry_show() -> str:
+    """Run poetry show command
+
+    Returns:
+        str: The output from the poetry show command
+    """
+
+    return subprocess.run(
+        ['poetry', 'show', '--tree'],
+        capture_output=True
+    ).stdout.decode()
 
 
 def _list_dependencies() -> List[Dependency]:
@@ -24,10 +43,7 @@ def _list_dependencies() -> List[Dependency]:
         List[Dependency]: A list of dependencies
     """
 
-    output = subprocess.run(
-        ['poetry', 'show', '--tree'],
-        capture_output=True
-    ).stdout.decode()
+    output = _run_poetry_show()
 
     dependencies: List[Dependency] = []
     for line in output.split('\n'):
@@ -39,19 +55,22 @@ def _list_dependencies() -> List[Dependency]:
     return dependencies
 
 
-def _bump_pyproject_versions(dependencies: List[Dependency], pyproject: Dict) -> Dict:
+def _bump_versions_in_pyproject(dependencies: List[Dependency], pyproject: Dict) -> Dict:
     """Bump versions in pyproject
 
     Args:
         dependencies (List[Dependency]): A list of dependencies
-        pyproject (Dict): The pyproject dictionary
+        pyproject (Dict): The pyproject file parsed as a dictionary
 
     Returns:
-        Dict: The updated pyproject dict
+        Dict: The updated pyproject dictionary
     """
 
     for dependency in dependencies:
-        value = utils.lookup_nested_dict(dictionary=pyproject['tool']['poetry'], key=dependency.name)
+        value = utils.lookup_nested_dict(
+            dictionary=pyproject['tool']['poetry'],
+            key=dependency.name
+        )
 
         if value.startswith(('^', '~')):
             new_version = value[0] + dependency.version
@@ -64,33 +83,38 @@ def _bump_pyproject_versions(dependencies: List[Dependency], pyproject: Dict) ->
     return pyproject
 
 
-def poetryup():
-    """Run poetry update and bump versions in pyproject.toml file
+def poetryup(pyproject_str: str) -> str:
+    """Update packages and bump their version
+    Args:
+        pyproject_str (str): The pyproject file parsed as a string
+
+    Returns:
+        str: The updated pyproject string
     """
 
+    _run_poetry_update()
+    dependencies = _list_dependencies()
+    pyproject_dict = toml.loads(pyproject_str)
+    updated_pyproject_dict = _bump_versions_in_pyproject(dependencies, pyproject_dict)
+
+    # in order to preserve the order of the pyproject file, append build-system to the end
+    build_system = {'build-system': updated_pyproject_dict.pop('build-system')}
+    updated_pyproject_str = toml.dumps(updated_pyproject_dict)
+    updated_pyproject_str += '\n' + toml.dumps(build_system)
+
+    return updated_pyproject_str
+
+
+def main():
     # read pyproject.toml file
     try:
-        pyproject_string = Path('pyproject.toml').read_text()
+        pyproject_str = Path('pyproject.toml').read_text()
     except FileNotFoundError:
         raise Exception('poetryup could not find a pyproject.toml file in current directory')
 
-    pyproject = toml.loads(pyproject_string)
-
-    # run poetry update
-    subprocess.run(['poetry', 'update'])
-    # list dependencies with their new versions
-    dependencies = _list_dependencies()
-    # bump versions in pyproject
-    pyproject = _bump_pyproject_versions(dependencies, pyproject)
-
-    # create updated pyproject.toml file
-    # in order to preserve the order of pyproject.toml, manually append build-system to the end
-    build_system = {'build-system': pyproject.pop('build-system')}
-    pyproject_string = toml.dumps(pyproject)
-    pyproject_string += '\n' + toml.dumps(build_system)
-
-    Path('pyproject.toml').write_text(pyproject_string)
+    updated_pyproject_str = poetryup(pyproject_str)
+    Path('pyproject.toml').write_text(updated_pyproject_str)
 
 
-if __name__ == '__main__':
-    poetryup()
+if __name__ == "__main__":
+    main()

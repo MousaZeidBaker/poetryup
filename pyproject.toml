@@ -12,13 +12,11 @@ python = "^3.6"
 toml = "^0.10.2"
 
 [tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+pytest-mock = "^3.6.1"
 
 [tool.poetry.scripts]
 poetryup = "poetryup.poetryup:main"
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^6.2.5"
-pytest-mock = "^3.6.1"
 
 [build-system]
 requires = [ "poetry-core>=1.0.0",]

@@ -27,7 +27,7 @@ def lookup_nested_dict(dictionary: Dict, key: str) -> Any:
 
 
 def update_nested_dict(dictionary: Dict, key: str, new_value: Any) -> bool:
-    """Updated value in nested dictionary
+    """Update value in nested dictionary
 
     Args:
         dictionary (Dict): The dictionary to search in

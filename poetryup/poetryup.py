@@ -84,7 +84,7 @@ def _bump_versions_in_pyproject(dependencies: List[Dependency], pyproject: Dict)
 
 
 def poetryup(pyproject_str: str) -> str:
-    """Update packages and bump their version
+    """Update dependencies and bump their version
     Args:
         pyproject_str (str): The pyproject file parsed as a string
 

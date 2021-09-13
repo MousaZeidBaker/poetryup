@@ -4,10 +4,11 @@ import re
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List
+from typing import List
 
-import toml
+import tomlkit
 from poetryup import utils
+from tomlkit.toml_document import TOMLDocument
 
 
 @dataclass
@@ -55,27 +56,27 @@ def _list_dependencies() -> List[Dependency]:
     return dependencies
 
 
-def _bump_versions_in_pyproject(dependencies: List[Dependency], pyproject: Dict) -> Dict:
+def _bump_versions_in_pyproject(dependencies: List[Dependency], pyproject: TOMLDocument) -> TOMLDocument:
     """Bump versions in pyproject
 
     Args:
         dependencies (List[Dependency]): A list of dependencies
-        pyproject (Dict): The pyproject file parsed as a dictionary
+        pyproject (TOMLDocument): The pyproject file parsed as a TOMLDocument
 
     Returns:
-        Dict: The updated pyproject dictionary
+        TOMLDocument: The updated pyproject
     """
 
     for dependency in dependencies:
-        value = utils.lookup_nested_dict(
-            dictionary=pyproject["tool"]["poetry"],
+        value = utils.lookup_tomlkit_table(
+            table=pyproject["tool"]["poetry"],
             key=dependency.name
         )
 
         if value.startswith(("^", "~")):
             new_version = value[0] + dependency.version
-            utils.update_nested_dict(
-                dictionary=pyproject["tool"]["poetry"],
+            utils.update_tomlkit_table(
+                table=pyproject["tool"]["poetry"],
                 key=dependency.name,
                 new_value=new_version
             )
@@ -94,15 +95,10 @@ def poetryup(pyproject_str: str) -> str:
 
     _run_poetry_update()
     dependencies = _list_dependencies()
-    pyproject_dict = toml.loads(pyproject_str)
-    updated_pyproject_dict = _bump_versions_in_pyproject(dependencies, pyproject_dict)
+    pyproject = tomlkit.loads(pyproject_str)
+    updated_pyproject = _bump_versions_in_pyproject(dependencies, pyproject)
 
-    # in order to preserve the order of the pyproject file, append build-system to the end
-    build_system = {"build-system": updated_pyproject_dict.pop("build-system")}
-    updated_pyproject_str = toml.dumps(updated_pyproject_dict)
-    updated_pyproject_str += "\n" + toml.dumps(build_system)
-
-    return updated_pyproject_str
+    return tomlkit.dumps(updated_pyproject)
 
 
 def main():

@@ -23,7 +23,7 @@ include = ["LICENSE"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
-toml = "^0.10.2"
+tomlkit = "^0.7.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"

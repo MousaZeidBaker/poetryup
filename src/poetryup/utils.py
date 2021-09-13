@@ -1,36 +1,38 @@
 #!/usr/bin/env python
 
-from typing import Any, Dict
+from typing import Any
+
+from tomlkit.container import Table
 
 
-def lookup_nested_dict(dictionary: Dict, key: str) -> Any:
-    """Lookup value recursively in nested dictionary
+def lookup_tomlkit_table(table: Table, key: str) -> Any:
+    """Lookup value recursively in a tomlkit Table
 
     Args:
-        dictionary (Dict): The dictionary to search in
+        table (Table): The table to search in
         key (str): The key to search for
 
     Returns:
         Any: The value of the key if found, None otherwise
     """
 
-    if key in dictionary:
-        return dictionary[key]
+    if key in table:
+        return table[key]
 
-    for value in dictionary.values():
-        if type(value) is dict:
-            lookup = lookup_nested_dict(value, key)
+    for value in table.values():
+        if type(value) is Table:
+            lookup = lookup_tomlkit_table(table=value, key=key)
             if lookup is not None:
                 return lookup
 
     return None
 
 
-def update_nested_dict(dictionary: Dict, key: str, new_value: Any) -> bool:
-    """Update value in nested dictionary
+def update_tomlkit_table(table: Table, key: str, new_value: Any) -> bool:
+    """Update value in a tomlkit Table
 
     Args:
-        dictionary (Dict): The dictionary to search in
+        table (Table): The table to search in
         key (str): The key to search for
         new_value (Any): The new value
 
@@ -38,13 +40,13 @@ def update_nested_dict(dictionary: Dict, key: str, new_value: Any) -> bool:
         Any: True if key found and value updated, False otherwise
     """
 
-    if key in dictionary:
-        dictionary[key] = new_value
+    if key in table:
+        table[key] = new_value
         return True
 
-    for value in dictionary.values():
-        if type(value) is dict:
-            updated = update_nested_dict(dictionary=value, key=key, new_value=new_value)
+    for value in table.values():
+        if type(value) is Table:
+            updated = update_tomlkit_table(table=value, key=key, new_value=new_value)
             if updated is True:
                 return True
 

@@ -4,7 +4,7 @@ version = "0.2.0"
 description = "Update dependencies and bump their version in the pyproject.toml file"
 authors = ["Mousa Zeid Baker"]
 packages = [
-    { include = "poetryup" },
+    { include = "poetryup", from = "src" },
 ]
 license = "MIT"
 readme = "README.md"
@@ -33,7 +33,7 @@ pytest = "^6.2.5"
 pytest-mock = "^3.6.1"
 
 [tool.poetry.scripts]
-poetryup = "poetryup.poetryup:main"
+poetryup = "src.poetryup.poetryup:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

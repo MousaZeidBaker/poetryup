@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Dict, List
 
 import toml
-from src.poetryup import utils
+from poetryup import utils
 
 
 @dataclass

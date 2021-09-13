@@ -3,9 +3,6 @@ name = "poetryup"
 version = "0.2.0"
 description = "Update dependencies and bump their version in the pyproject.toml file"
 authors = ["Mousa Zeid Baker"]
-packages = [
-    { include = "poetryup", from = "src" },
-]
 license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/MousaZeidBaker/poetryup"

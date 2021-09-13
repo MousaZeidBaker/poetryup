@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "poetryup"
+version = "0.2.0"
+description = "Update dependencies and bump their version in the pyproject.toml file"
+authors = ["Mousa Zeid Baker"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/MousaZeidBaker/poetryup"
+repository = "https://github.com/MousaZeidBaker/poetryup"
+keywords=[
+    "packaging",
+    "dependency",
+    "poetry",
+    "poetryup",
+]
+classifiers=[
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+include = ["LICENSE"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+toml = "^0.10.2"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+pytest-mock = "^3.6.1"
+
+[tool.poetry.scripts]
+poetryup = "src.poetryup.poetryup:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

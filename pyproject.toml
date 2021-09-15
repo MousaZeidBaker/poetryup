@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "poetryup"
-version = "0.2.0"
+version = "0.3.0"
 description = "Update dependencies and bump their version in the pyproject.toml file"
 authors = ["Mousa Zeid Baker"]
 license = "MIT"
@@ -23,7 +23,7 @@ include = ["LICENSE"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
-toml = "^0.10.2"
+tomlkit = "^0.7.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"

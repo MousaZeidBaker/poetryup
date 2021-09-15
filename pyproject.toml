@@ -1,8 +1,11 @@
 [tool.poetry]
 name = "poetryup"
-version = "0.3.0"
+version = "0.3.1"
 description = "Update dependencies and bump their version in the pyproject.toml file"
 authors = ["Mousa Zeid Baker"]
+packages = [
+    { include = "poetryup", from = "src" },
+]
 license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/MousaZeidBaker/poetryup"
@@ -30,7 +33,7 @@ pytest = "^6.2.5"
 pytest-mock = "^3.6.1"
 
 [tool.poetry.scripts]
-poetryup = "src.poetryup.poetryup:main"
+poetryup = "poetryup.poetryup:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

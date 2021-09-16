@@ -12,6 +12,8 @@ constraint. The `poetry.lock` file will be recreated as well. PoetryUp runs
 [poetry](https://github.com/python-poetry/poetry) commands, thus it's required to be installed. The difference between
 running `poetry update` and `poetryup`, is that the latter also modifies the `pyproject.toml` file.
 
+![poetryup_demo](https://raw.githubusercontent.com/MousaZeidBaker/poetryup/master/media/poetryup_demo.gif)
+
 ## Usage
 ```shell
 poetryup

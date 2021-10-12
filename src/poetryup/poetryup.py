@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import logging
 import re
 import subprocess
 from dataclasses import dataclass
@@ -8,6 +9,7 @@ from typing import List
 
 import tomlkit
 from poetryup import utils
+from tomlkit.items import String
 from tomlkit.toml_document import TOMLDocument
 
 
@@ -15,6 +17,13 @@ from tomlkit.toml_document import TOMLDocument
 class Dependency:
     name: str
     version: str
+
+
+def _setup_logging() -> None:
+    """Setup and configure logging
+    """
+
+    logging.basicConfig(level=logging.INFO)
 
 
 def _run_poetry_update() -> None:
@@ -67,11 +76,17 @@ def _bump_versions_in_pyproject(dependencies: List[Dependency], pyproject: TOMLD
         TOMLDocument: The updated pyproject
     """
 
+    logging.info(f"Found {len(dependencies)} dependencies in pyproject.toml")
+
     for dependency in dependencies:
         value = utils.lookup_tomlkit_table(
             table=pyproject["tool"]["poetry"],
             key=dependency.name
         )
+
+        if type(value) is not String:
+            logging.info(f"Bumping skipped for dependency named: {dependency.name}")
+            continue  # skip if dependency is complex or if not found
 
         if value.startswith(("^", "~")):
             new_version = value[0] + dependency.version
@@ -102,6 +117,8 @@ def poetryup(pyproject_str: str) -> str:
 
 
 def main():
+    _setup_logging()
+
     # read pyproject.toml file
     try:
         pyproject_str = Path("pyproject.toml").read_text()

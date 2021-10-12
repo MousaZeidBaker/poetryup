@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from tomlkit.container import Table
+from tomlkit.items import Table
 
 
 def lookup_tomlkit_table(table: Table, key: str) -> Any:

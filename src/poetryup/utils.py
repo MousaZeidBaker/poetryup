@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from tomlkit.items import Table
+from tomlkit.items import String, Table
 
 
 def lookup_tomlkit_table(table: Table, key: str) -> Any:
@@ -16,8 +16,9 @@ def lookup_tomlkit_table(table: Table, key: str) -> Any:
         Any: The value of the key if found, None otherwise
     """
 
-    if key in table:
-        return table[key]
+    for item_key, item_value in table.items():
+        if item_key.lower() == key and type(item_value) == String:
+            return item_value
 
     for value in table.values():
         if type(value) is Table:
@@ -40,13 +41,14 @@ def update_tomlkit_table(table: Table, key: str, new_value: Any) -> bool:
         Any: True if key found and value updated, False otherwise
     """
 
-    if key in table:
-        table[key] = new_value
-        return True
+    for item_key, item_value in table.items():
+        if item_key.lower() == key and type(item_value) == String:
+            table[item_key] = new_value
+            return True
 
-    for value in table.values():
-        if type(value) is Table:
-            updated = update_tomlkit_table(table=value, key=key, new_value=new_value)
+    for item_value in table.values():
+        if type(item_value) is Table:
+            updated = update_tomlkit_table(table=item_value, key=key, new_value=new_value)
             if updated is True:
                 return True
 

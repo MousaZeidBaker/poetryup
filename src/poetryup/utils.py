@@ -48,7 +48,9 @@ def update_tomlkit_table(table: Table, key: str, new_value: Any) -> bool:
 
     for item_value in table.values():
         if type(item_value) is Table:
-            updated = update_tomlkit_table(table=item_value, key=key, new_value=new_value)
+            updated = update_tomlkit_table(
+                table=item_value, key=key, new_value=new_value
+            )
             if updated is True:
                 return True
 

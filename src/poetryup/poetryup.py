@@ -8,9 +8,10 @@ from pathlib import Path
 from typing import List
 
 import tomlkit
-from poetryup import utils
 from tomlkit.items import String
 from tomlkit.toml_document import TOMLDocument
+
+from poetryup import utils
 
 
 @dataclass
@@ -20,15 +21,13 @@ class Dependency:
 
 
 def _setup_logging() -> None:
-    """Setup and configure logging
-    """
+    """Setup and configure logging"""
 
     logging.basicConfig(level=logging.INFO)
 
 
 def _run_poetry_update() -> None:
-    """Run poetry update command
-    """
+    """Run poetry update command"""
 
     subprocess.run(["poetry", "update"])
 
@@ -41,8 +40,7 @@ def _run_poetry_show() -> str:
     """
 
     return subprocess.run(
-        ["poetry", "show", "--tree"],
-        capture_output=True
+        ["poetry", "show", "--tree"], capture_output=True
     ).stdout.decode()
 
 
@@ -66,7 +64,9 @@ def _list_dependencies() -> List[Dependency]:
     return dependencies
 
 
-def _bump_versions_in_pyproject(dependencies: List[Dependency], pyproject: TOMLDocument) -> TOMLDocument:
+def _bump_versions_in_pyproject(
+    dependencies: List[Dependency], pyproject: TOMLDocument
+) -> TOMLDocument:
     """Bump versions in pyproject
 
     Args:
@@ -81,12 +81,13 @@ def _bump_versions_in_pyproject(dependencies: List[Dependency], pyproject: TOMLD
 
     for dependency in dependencies:
         value = utils.lookup_tomlkit_table(
-            table=pyproject["tool"]["poetry"],
-            key=dependency.name
+            table=pyproject["tool"]["poetry"], key=dependency.name
         )
 
         if type(value) is not String:
-            logging.info(f"Bumping skipped for dependency named: {dependency.name}")
+            logging.info(
+                f"Bumping skipped for dependency named: {dependency.name}"
+            )
             continue  # skip if dependency is complex or if not found
 
         if value.startswith(("^", "~")):
@@ -94,7 +95,7 @@ def _bump_versions_in_pyproject(dependencies: List[Dependency], pyproject: TOMLD
             utils.update_tomlkit_table(
                 table=pyproject["tool"]["poetry"],
                 key=dependency.name,
-                new_value=new_version
+                new_value=new_version,
             )
 
     return pyproject
@@ -124,7 +125,9 @@ def main():
     try:
         pyproject_str = Path("pyproject.toml").read_text()
     except FileNotFoundError:
-        raise Exception("poetryup could not find a pyproject.toml file in current directory")
+        raise Exception(
+            "poetryup couldn't find a pyproject.toml file in current directory"
+        )
 
     updated_pyproject_str = poetryup(pyproject_str)
     Path("pyproject.toml").write_text(updated_pyproject_str)

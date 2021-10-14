@@ -55,9 +55,10 @@ def _list_dependencies() -> List[Dependency]:
 
     output = _run_poetry_show()
 
+    pattern = re.compile("^[a-zA-Z-]+")
     dependencies: List[Dependency] = []
     for line in output.split("\n"):
-        if re.match("^[a-zA-Z]+", line) is not None:
+        if pattern.match(line) is not None:
             name, version, *_ = line.split()
             dependency = Dependency(name=name, version=version)
             dependencies.append(dependency)

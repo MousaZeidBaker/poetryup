@@ -31,6 +31,11 @@ tomlkit = "^0.7.2"
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
 pytest-mock = "^3.6.1"
+black = "^20.8b1"
+isort = "5.8.0"
+flake8 = "^4.0.1"
+flake8-black = "^0.2.3"
+flake8-isort = "^4.1.1"
 
 [tool.poetry.scripts]
 poetryup = "poetryup.poetryup:main"
@@ -38,3 +43,9 @@ poetryup = "poetryup.poetryup:main"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 80
+
+[tool.isort]
+profile = "black"

@@ -19,12 +19,6 @@ running `poetry update` and `poetryup`, is that the latter also modifies the `py
 poetryup
 ```
 
-## Test
-Activate virtualenv & Install project dependencies
-```shell
-poetry shell && poetry install
-```
-
 Run tests
 ```shell
 pytest tests
@@ -36,3 +30,34 @@ Contributions are welcome via pull requests.
 ## Issues
 If you encounter any problems, please file an [issue](https://github.com/MousaZeidBaker/poetryup/issues) along with a
 detailed description.
+
+## Develop
+Activate virtual environment
+```shell
+poetry shell
+```
+
+Install dependencies
+```shell
+poetry install
+```
+
+Run tests
+```shell
+pytest tests
+```
+
+Run linter
+```shell
+flake8 .
+```
+
+Format code
+```shell
+black .
+```
+
+Sort imports
+```shell
+isort .
+```

@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from poetryup.poetryup import poetryup
+from poetryup.main import poetryup
 
 
 def pytest_generate_tests(metafunc) -> None:

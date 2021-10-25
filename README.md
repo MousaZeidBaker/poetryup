@@ -39,7 +39,12 @@ poetry shell
 
 Install dependencies
 ```shell
-poetry install
+poetry install --remove-untracked
+```
+
+Install git hooks
+```shell
+pre-commit install --hook-type pre-commit
 ```
 
 Run tests

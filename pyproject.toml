@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "poetryup"
-version = "0.3.9"
+version = "0.3.10"
 description = "Update dependencies and bump their version in the pyproject.toml file"
 authors = ["Mousa Zeid Baker"]
 packages = [
@@ -38,7 +38,7 @@ flake8-black = "^0.2.3"
 flake8-isort = "^4.1.1"
 
 [tool.poetry.scripts]
-poetryup = "poetryup.poetryup:main"
+poetryup = "poetryup.main:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

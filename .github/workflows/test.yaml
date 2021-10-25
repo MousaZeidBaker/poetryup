@@ -38,6 +38,7 @@ jobs:
         run: |
           source $(poetry env info --path)/bin/activate # activate virtual environment
           pytest tests
+          poetryup
 
       - name: Build
         run: poetry build

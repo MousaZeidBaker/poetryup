@@ -11,6 +11,4 @@ def mock_poetry_commands(mocker: MockerFixture) -> None:
         "pyproject.toml file"
         "\n└── toml >=0.10.2,<0.11.0"
     )
-    mocker.patch(
-        "poetryup.main._run_poetry_show", return_value=return_value
-    )
+    mocker.patch("poetryup.main._run_poetry_show", return_value=return_value)

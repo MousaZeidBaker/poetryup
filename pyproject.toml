@@ -38,7 +38,7 @@ flake8-black = "^0.2.3"
 flake8-isort = "^4.1.1"
 
 [tool.poetry.scripts]
-poetryup = "poetryup.poetryup:main"
+poetryup = "poetryup.main:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

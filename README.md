@@ -19,11 +19,6 @@ running `poetry update` and `poetryup`, is that the latter also modifies the `py
 poetryup
 ```
 
-Run tests
-```shell
-pytest tests
-```
-
 ## Contributing
 Contributions are welcome via pull requests.
 

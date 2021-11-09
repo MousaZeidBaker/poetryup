@@ -7,10 +7,12 @@
 [![pypi_v](https://img.shields.io/pypi/v/poetryup.svg)](https://pypi.org/project/poetryup)
 [![pypi_dm](https://img.shields.io/pypi/dm/poetryup.svg)](https://pypi.org/project/poetryup)
 
-PoetryUp updates dependencies and bumps their version in the `pyproject.toml` file with respect to their version
-constraint. The `poetry.lock` file will be recreated as well. PoetryUp runs
-[poetry](https://github.com/python-poetry/poetry) commands, thus it's required to be installed. The difference between
-running `poetry update` and `poetryup`, is that the latter also modifies the `pyproject.toml` file.
+PoetryUp updates dependencies and bumps their version in the `pyproject.toml`
+file with respect to their version constraint. The `poetry.lock` file will be
+recreated as well. PoetryUp runs
+[poetry](https://github.com/python-poetry/poetry) commands, thus it's required
+to be installed. The difference between running `poetry update` and `poetryup`,
+is that the latter also modifies the `pyproject.toml` file.
 
 ![poetryup_demo](https://raw.githubusercontent.com/MousaZeidBaker/poetryup/master/media/poetryup_demo.gif)
 
@@ -23,8 +25,9 @@ poetryup
 Contributions are welcome via pull requests.
 
 ## Issues
-If you encounter any problems, please file an [issue](https://github.com/MousaZeidBaker/poetryup/issues) along with a
-detailed description.
+If you encounter any problems, please file an
+[issue](https://github.com/MousaZeidBaker/poetryup/issues) along with a detailed
+description.
 
 ## Develop
 Activate virtual environment

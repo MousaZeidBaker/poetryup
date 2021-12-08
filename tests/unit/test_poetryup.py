@@ -30,8 +30,15 @@ def pytest_generate_tests(metafunc) -> None:
     )
 
 
-def test_poetryup(
+def test_poetryup_no_latest(
     input_pyproject: str, expected_pyproject: str, mock_poetry_commands
 ) -> None:
-    updated_pyproject = poetryup(input_pyproject)
+    updated_pyproject = poetryup(input_pyproject, False)
+    assert updated_pyproject == expected_pyproject
+
+
+def test_poetryup_latest(
+    input_pyproject: str, expected_pyproject: str, mock_poetry_commands
+) -> None:
+    updated_pyproject = poetryup(input_pyproject, True)
     assert updated_pyproject == expected_pyproject

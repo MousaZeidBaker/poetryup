@@ -8,10 +8,13 @@ from pathlib import Path
 from typing import List
 
 import tomlkit
+import typer
 from tomlkit.items import String
 from tomlkit.toml_document import TOMLDocument
 
 from poetryup import utils
+
+app = typer.Typer(add_completion=False)
 
 
 @dataclass
@@ -30,6 +33,16 @@ def _run_poetry_update() -> None:
     """Run poetry update command"""
 
     subprocess.run(["poetry", "update"])
+
+
+def _run_poetry_add(package: str) -> None:
+    """Run poetry add command
+
+    Args:
+        package (str): The package to add
+    """
+
+    subprocess.run(["poetry", "add", package])
 
 
 def _run_poetry_show() -> str:
@@ -101,16 +114,26 @@ def _bump_versions_in_pyproject(
     return pyproject
 
 
-def poetryup(pyproject_str: str) -> str:
+def poetryup(pyproject_str: str, latest: bool = False) -> str:
     """Update dependencies and bump their version
+
     Args:
         pyproject_str (str): The pyproject file parsed as a string
+        latest (bool): Indicates whether to update dependencies to their latest
+                       available version, defaults to false
 
     Returns:
         str: The updated pyproject string
     """
 
-    _run_poetry_update()
+    if latest:
+        logging.info("Updating dependencies to their latest available version")
+        dependencies = _list_dependencies()
+        for dependency in dependencies:
+            _run_poetry_add(f"{dependency.name}@latest")
+    else:
+        _run_poetry_update()
+
     dependencies = _list_dependencies()
     pyproject = tomlkit.loads(pyproject_str)
     updated_pyproject = _bump_versions_in_pyproject(dependencies, pyproject)
@@ -118,7 +141,15 @@ def poetryup(pyproject_str: str) -> str:
     return tomlkit.dumps(updated_pyproject)
 
 
-def main():
+@app.command()
+def main(
+    latest: bool = typer.Option(
+        default=False,
+        help="Whether to update dependencies to their latest version.",
+    ),
+):
+    """Update dependencies and bump their version in pyproject.toml file"""
+
     _setup_logging()
 
     # read pyproject.toml file
@@ -129,9 +160,9 @@ def main():
             "poetryup couldn't find a pyproject.toml file in current directory"
         )
 
-    updated_pyproject_str = poetryup(pyproject_str)
+    updated_pyproject_str = poetryup(pyproject_str, latest)
     Path("pyproject.toml").write_text(updated_pyproject_str)
 
 
 if __name__ == "__main__":
-    main()
+    app()

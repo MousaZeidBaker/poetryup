@@ -18,7 +18,7 @@ is that the latter also modifies the `pyproject.toml` file.
 
 ## Usage
 ```shell
-poetryup
+poetryup --help
 ```
 
 ## Contributing

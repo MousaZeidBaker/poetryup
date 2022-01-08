@@ -64,3 +64,8 @@ Sort imports
 ```shell
 isort .
 ```
+
+Install current project from branch
+```shell
+poetry add git+https://github.com/MousaZeidBaker/poetryup.git@branch-name
+```

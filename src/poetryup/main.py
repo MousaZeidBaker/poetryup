@@ -9,7 +9,7 @@ from typing import List
 
 import tomlkit
 import typer
-from tomlkit.items import String
+from tomlkit import items
 from tomlkit.toml_document import TOMLDocument
 
 from poetryup import utils
@@ -94,22 +94,29 @@ def _bump_versions_in_pyproject(
 
     for dependency in dependencies:
         value = utils.lookup_tomlkit_table(
-            table=pyproject["tool"]["poetry"], key=dependency.name
+            table=pyproject["tool"]["poetry"],
+            key=dependency.name,
         )
 
-        if type(value) is not String:
-            logging.info(
-                f"Bumping skipped for dependency named: {dependency.name}"
-            )
-            continue  # skip if dependency is complex or if not found
+        if type(value) is items.String and value.startswith(("^", "~")):
+            new_value = value[0] + dependency.version
+        elif (
+            type(value) is items.InlineTable
+            and "version" in value
+            and value["version"].startswith(("^", "~"))
+        ):
+            new_value = value
+            new_value["version"] = value["version"][0] + dependency.version
+        else:
+            # skip if exact version or not found or complex dependency
+            logging.info(f"Bumping skipped for dependency: {dependency.name}")
+            continue
 
-        if value.startswith(("^", "~")):
-            new_version = value[0] + dependency.version
-            utils.update_tomlkit_table(
-                table=pyproject["tool"]["poetry"],
-                key=dependency.name,
-                new_value=new_version,
-            )
+        utils.update_tomlkit_table(
+            table=pyproject["tool"]["poetry"],
+            key=dependency.name,
+            new_value=new_value,
+        )
 
     return pyproject
 

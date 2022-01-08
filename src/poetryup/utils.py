@@ -2,10 +2,10 @@
 
 from typing import Any
 
-from tomlkit.items import String, Table
+from tomlkit import items
 
 
-def lookup_tomlkit_table(table: Table, key: str) -> Any:
+def lookup_tomlkit_table(table: items.Table, key: str) -> Any:
     """Lookup value recursively in a tomlkit Table
 
     Args:
@@ -17,11 +17,11 @@ def lookup_tomlkit_table(table: Table, key: str) -> Any:
     """
 
     for item_key, item_value in table.items():
-        if item_key.lower() == key and type(item_value) == String:
+        if item_key.lower() == key:
             return item_value
 
     for value in table.values():
-        if type(value) is Table:
+        if type(value) is items.Table:
             lookup = lookup_tomlkit_table(table=value, key=key)
             if lookup is not None:
                 return lookup
@@ -29,7 +29,7 @@ def lookup_tomlkit_table(table: Table, key: str) -> Any:
     return None
 
 
-def update_tomlkit_table(table: Table, key: str, new_value: Any) -> bool:
+def update_tomlkit_table(table: items.Table, key: str, new_value: Any) -> bool:
     """Update value in a tomlkit Table
 
     Args:
@@ -42,12 +42,12 @@ def update_tomlkit_table(table: Table, key: str, new_value: Any) -> bool:
     """
 
     for item_key, item_value in table.items():
-        if item_key.lower() == key and type(item_value) == String:
+        if item_key.lower() == key:
             table[item_key] = new_value
             return True
 
     for item_value in table.values():
-        if type(item_value) is Table:
+        if type(item_value) is items.Table:
             updated = update_tomlkit_table(
                 table=item_value, key=key, new_value=new_value
             )

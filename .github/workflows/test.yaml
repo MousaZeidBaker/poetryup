@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: testpypi
     strategy:
+      fail-fast: false
       matrix:
         python-version: [ '3.6', '3.7', '3.8', '3.9' ]
     steps:
@@ -47,7 +48,7 @@ jobs:
         run: |
           source $(poetry env info --path)/bin/activate # activate virtual environment
           NEW_VERSION=$(poetry version --short)
-          git fetch --no-tags && git checkout master
+          git fetch --no-tags && git checkout --force master
           OLD_VERSION=$(poetry version --short)
           echo "NEW_VERSION ${NEW_VERSION} OLD_VERSION ${OLD_VERSION}"
           if [[ "$NEW_VERSION" == "$OLD_VERSION" ]]; then

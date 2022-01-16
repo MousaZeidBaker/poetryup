@@ -21,6 +21,11 @@ is that the latter also modifies the `pyproject.toml` file.
 poetryup
 ```
 
+## Automate Dependency Updates with GitHub Actions
+Use PoetryUp with GitHub actions to automate the process of updating
+dependencies, for reference see this project's [workflow
+configuration](https://github.com/MousaZeidBaker/poetryup/blob/master/.github/workflows/update-dependencies.yaml).
+
 ## Contributing
 Contributions are welcome via pull requests.
 

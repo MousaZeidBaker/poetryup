@@ -126,7 +126,7 @@ class Pyproject:
         if latest:
             logging.info("Updating dependencies to their latest version")
             for dependency in self.list_dependencies():
-                if type(dependency.version) is str:
+                if type(dependency.version) is items.String:
                     logging.info(f"Updating dependency '{dependency.name}'")
                     self.__run_poetry_add(
                         package=f"{dependency.name}@latest",

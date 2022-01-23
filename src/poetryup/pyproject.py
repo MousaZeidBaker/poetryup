@@ -125,13 +125,21 @@ class Pyproject:
 
         if latest:
             logging.info("Updating dependencies to their latest version")
+            # sort dependencies into their groups and add them at once in order
+            # to avoid version solver error in case dependencies depend on each
+            # other
+            groups = {}
             for dependency in self.list_dependencies():
                 if type(dependency.version) is items.String:
-                    logging.info(f"Updating dependency '{dependency.name}'")
-                    self.__run_poetry_add(
-                        package=f"{dependency.name}@latest",
-                        group=dependency.group,
-                    )
+                    groups[dependency.group] = groups.get(
+                        dependency.group, []
+                    ) + [f"{dependency.name}@latest"]
+
+            for group, packages in groups.items():
+                self.__run_poetry_add(
+                    packages=packages,
+                    group=group,
+                )
         else:
             logging.info("Running poetry update command")
             self.__run_poetry_update()
@@ -200,21 +208,21 @@ class Pyproject:
 
     def __run_poetry_add(
         self,
-        package: str,
+        packages: List[str],
         group: Optional[str],
     ) -> None:
         """Run poetry add command
 
         Args:
-            package: The package to add
-            group: The group the package should be added to
+            package: The package(s) to add
+            group: The group the package(s) should be added to
         """
 
         if group is None or group == "default":
-            subprocess.run(["poetry", "add", package])
+            subprocess.run(["poetry", "add", *packages])
         elif group == "dev" and self.poetry_version < version_.parse("1.2.0"):
-            subprocess.run(["poetry", "add", package, f"--{group}"])
+            subprocess.run(["poetry", "add", *packages, f"--{group}"])
         elif self.poetry_version >= version_.parse("1.2.0"):
-            subprocess.run(["poetry", "add", package, f"--group {group}"])
+            subprocess.run(["poetry", "add", *packages, f"--group {group}"])
         else:
-            logging.info(f"Couldn't add package '{package}'")
+            logging.info(f"Couldn't add package(s) '{packages}'")

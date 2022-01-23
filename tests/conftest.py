@@ -1,14 +1,37 @@
 import pytest
 from pytest_mock import MockerFixture
 
+from poetryup.pyproject import Pyproject
+
 
 @pytest.fixture(scope="function")
 def mock_poetry_commands(mocker: MockerFixture) -> None:
-    mocker.patch("poetryup.main._run_poetry_update", return_value=None)
+    """Mock poetry commands"""
 
-    return_value = (
-        "poetryup 0.2.0 Update dependencies and bump their version in the "
-        "pyproject.toml file"
-        "\n└── toml >=0.10.2,<0.11.0"
+    mocker.patch.object(
+        Pyproject,
+        "_Pyproject__get_poetry_version",
+        return_value="1.1.0",
     )
-    mocker.patch("poetryup.main._run_poetry_show", return_value=return_value)
+
+    mocker.patch.object(
+        Pyproject,
+        "_Pyproject__run_poetry_show",
+        return_value=(
+            "poetryup 0.2.0 Update dependencies and bump their version in the "
+            "pyproject.toml file"
+            "\n└── toml >=0.10.2,<0.11.0"
+        ),
+    )
+
+    mocker.patch.object(
+        Pyproject,
+        "_Pyproject__run_poetry_update",
+        return_value=None,
+    )
+
+    mocker.patch.object(
+        Pyproject,
+        "_Pyproject__run_poetry_add",
+        return_value=None,
+    )

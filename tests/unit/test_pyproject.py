@@ -1,19 +1,21 @@
 import os
 from pathlib import Path
 
-from poetryup.main import poetryup
+from poetryup.pyproject import Pyproject
 
 
 def pytest_generate_tests(metafunc) -> None:
     input_pyproject_path = os.path.join(
-        os.path.dirname(__file__), "fixtures/input_pyproject"
+        os.path.dirname(__file__),
+        "fixtures/input_pyproject",
     )
     input_pyprojects = [
         file.read_text() for file in Path(input_pyproject_path).glob("*.toml")
     ]
 
     expected_pyproject_path = os.path.join(
-        os.path.dirname(__file__), "fixtures/expected_pyproject"
+        os.path.dirname(__file__),
+        "fixtures/expected_pyproject",
     )
     expected_pyprojects = [
         file.read_text()
@@ -30,8 +32,21 @@ def pytest_generate_tests(metafunc) -> None:
     )
 
 
-def test_poetryup(
-    input_pyproject: str, expected_pyproject: str, mock_poetry_commands
+def test_update_dependencies(
+    input_pyproject: str,
+    expected_pyproject: str,
+    mock_poetry_commands,
 ) -> None:
-    updated_pyproject = poetryup(input_pyproject)
-    assert updated_pyproject == expected_pyproject
+    pyproject = Pyproject(input_pyproject)
+    pyproject.update_dependencies()
+    assert pyproject.dumps() == expected_pyproject
+
+
+def test_update_dependencies_latest(
+    input_pyproject: str,
+    expected_pyproject: str,
+    mock_poetry_commands,
+) -> None:
+    pyproject = Pyproject(input_pyproject)
+    pyproject.update_dependencies(latest=True)
+    assert pyproject.dumps() == expected_pyproject

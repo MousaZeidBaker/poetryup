@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "poetryup"
-version = "0.4.3"
+version = "0.5.0"
 description = "Update dependencies and bump their version in the pyproject.toml file"
 authors = ["Mousa Zeid Baker"]
 packages = [
@@ -26,7 +26,9 @@ include = ["LICENSE"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
-tomlkit = "^0.7.2"
+tomlkit = "^0.8.0"
+typer = "^0.4.0"
+packaging = "^21.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
@@ -39,10 +41,10 @@ flake8 = "^4.0.1"
 flake8-black = "^0.2.3"
 flake8-isort = "^4.1.1"
 isort = { version = "^5.10.1", python = "^3.6.1" }
-pre-commit = { version = "^2.16.0", python = "^3.6.1" }
+pre-commit = { version = "^2.17.0", python = "^3.6.1" }
 
 [tool.poetry.scripts]
-poetryup = "poetryup.main:main"
+poetryup = "poetryup.main:app"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

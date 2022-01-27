@@ -2,10 +2,10 @@
 
 ![build](https://github.com/MousaZeidBaker/poetryup/workflows/Publish/badge.svg)
 ![test](https://github.com/MousaZeidBaker/poetryup/workflows/Test/badge.svg)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![python_version](https://img.shields.io/badge/python-%3E=3.6-blue.svg)
-[![pypi_v](https://img.shields.io/pypi/v/poetryup.svg)](https://pypi.org/project/poetryup)
-[![pypi_dm](https://img.shields.io/pypi/dm/poetryup.svg)](https://pypi.org/project/poetryup)
+[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+![python_version](https://img.shields.io/badge/python-%3E=3.6-blue)
+[![pypi_v](https://img.shields.io/pypi/v/poetryup)](https://pypi.org/project/poetryup)
+[![pypi_dm](https://img.shields.io/pypi/dm/poetryup)](https://pypi.org/project/poetryup)
 
 PoetryUp updates dependencies and bumps their version in the `pyproject.toml`
 file with respect to their version constraint. The `poetry.lock` file will be

@@ -98,7 +98,7 @@ class Pyproject:
         dependencies = self.list_dependencies()
         for dependency in dependencies:
             # find corresponding lock dependency
-            name = dependency.name.lower()
+            name = dependency.name.lower().replace("_", "-")
             lock_dep = next(dep for dep in lock_deps if dep.name == name)
 
             constraint = ""

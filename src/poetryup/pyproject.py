@@ -99,7 +99,7 @@ class Pyproject:
         for dependency in dependencies:
             # find corresponding lock dependency
             name = dependency.name.lower().replace("_", "-")
-            lock_dep = next(dep for dep in lock_deps.replace("_", "-") if dep.name == name)
+            lock_dep = next(dep for dep in lock_deps if dep.name.replace("_", "-") == name)
 
             constraint = ""
             if type(dependency.version) is items.String:

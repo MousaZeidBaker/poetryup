@@ -1,7 +1,7 @@
 import logging
 import re
 import subprocess
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Optional, Union
 
 import tomlkit
@@ -14,8 +14,13 @@ class Dependency:
     """A class to represent a dependency"""
 
     name: str
+    normalized_name: str = field(init=False)
     version: Union[items.String, items.InlineTable, items.Array]
     group: str
+
+    def __post_init__(self):
+        # https://www.python.org/dev/peps/pep-0503/#normalized-names
+        self.normalized_name = self.name.replace("_", "-").lower()
 
 
 class Pyproject:
@@ -97,9 +102,19 @@ class Pyproject:
         # list dependencies from pyproject and set version to lock version
         dependencies = self.list_dependencies()
         for dependency in dependencies:
-            # find corresponding lock dependency
-            name = dependency.name.lower()
-            lock_dep = next(dep for dep in lock_deps if dep.name == name)
+            lock_dep = next(
+                (
+                    lock_dep
+                    for lock_dep in lock_deps
+                    if lock_dep.normalized_name == dependency.normalized_name
+                ),
+                None,
+            )
+            if lock_dep is None:
+                logging.info(
+                    f"Couldn't find lock dependency for '{dependency.name}'"
+                )
+                continue
 
             constraint = ""
             if type(dependency.version) is items.String:

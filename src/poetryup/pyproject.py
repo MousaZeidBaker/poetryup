@@ -99,7 +99,15 @@ class Pyproject:
         for dependency in dependencies:
             # find corresponding lock dependency
             name = dependency.name.lower().replace("_", "-")
-            lock_dep = next(dep for dep in lock_deps if dep.name.replace("_", "-") == name)
+            lock_deps_iter = iter(
+                dep for dep in lock_deps if dep.name.replace("_", "-") == name
+            )
+            lock_dep = next(lock_deps_iter, None)
+            if lock_dep is None:
+                logging.info(
+                    f"Couldn't find lock dependency for '{dependency.name}'"
+                )
+                continue
 
             constraint = ""
             if type(dependency.version) is items.String:

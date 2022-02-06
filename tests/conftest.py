@@ -20,7 +20,10 @@ def mock_poetry_commands(mocker: MockerFixture) -> None:
         return_value=(
             "poetryup 0.2.0 Update dependencies and bump their version in the "
             "pyproject.toml file"
-            "\n└── toml >=0.10.2,<0.11.0"
+            "\n└── toml >=0.10.2,<0.11.0\n"
+            "poetryup-extra 0.2.0 "
+            "pyproject.toml file"
+            "\n└── toml >=0.10.2,<0.11.0\n"
         ),
     )
 

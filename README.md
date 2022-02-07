@@ -7,9 +7,10 @@
 [![pypi_v](https://img.shields.io/pypi/v/poetryup)](https://pypi.org/project/poetryup)
 [![pypi_dm](https://img.shields.io/pypi/dm/poetryup)](https://pypi.org/project/poetryup)
 
-PoetryUp updates dependencies and bumps their version in the `pyproject.toml`
-file with respect to their version constraint. The `poetry.lock` file will be
-recreated as well. PoetryUp runs
+PoetryUp updates dependencies and bumps their version in both `poetry.lock` as
+well as in `pyproject.toml` file. Dependencies version constraints are
+respected, unless the `--latest` flag is passed, in which case dependencies will
+be updated to their latest available version. PoetryUp runs
 [poetry](https://github.com/python-poetry/poetry) commands, thus it's required
 to be installed. The difference between running `poetry update` and `poetryup`,
 is that the latter also modifies the `pyproject.toml` file.

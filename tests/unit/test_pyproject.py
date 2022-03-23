@@ -267,7 +267,7 @@ def test_update_dependencies_latest_with_exact_version_dependency(
     )
 
 
-def test_update_dependencies_latest_no_exact_with_exact_version_dependency(
+def test_update_dependencies_latest_skip_exact_with_exact_version_dependency(
     mock_poetry_commands,
     mocker: MockerFixture,
 ) -> None:

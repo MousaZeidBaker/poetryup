@@ -141,13 +141,13 @@ class Pyproject:
     def update_dependencies(
         self,
         latest: bool = False,
-        no_exact: bool = False,
+        skip_exact: bool = False,
     ) -> None:
         """Update dependencies and bump their version in pyproject
 
         Args:
             latest: Whether to update dependencies to their latest version
-            no_exact: Whether to skip dependencies with an exact version
+            skip_exact: Whether to skip dependencies with an exact version
         """
 
         if latest:
@@ -157,7 +157,7 @@ class Pyproject:
             # other
             groups = {}
             for dependency in self.list_dependencies():
-                if no_exact and dependency.constraint == "":
+                if skip_exact and dependency.constraint == "":
                     # skip dependencies with an exact version
                     continue
                 if type(dependency.version) is items.String:

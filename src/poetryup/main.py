@@ -19,6 +19,10 @@ def poetryup(
         default=False,
         help="Whether to update dependencies to their latest version.",
     ),
+    no_exact: bool = typer.Option(
+        default=False,
+        help="Whether to skip dependencies with an exact version.",
+    ),
 ):
     """Update dependencies and bump their version in pyproject.toml file"""
 
@@ -30,7 +34,7 @@ def poetryup(
         )
 
     pyproject = Pyproject(pyproject_str)
-    pyproject.update_dependencies(latest)
+    pyproject.update_dependencies(latest, no_exact)
     Path("pyproject.toml").write_text(pyproject.dumps())
 
 

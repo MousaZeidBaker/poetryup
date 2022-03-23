@@ -30,7 +30,7 @@ class Dependency:
         elif type(self.version) is items.InlineTable:
             if self.version.get("version", "").startswith(("^", "~")):
                 return self.version["version"][0]
-        return ""
+        return ""  # dependencies with exact version or multiple versions
 
 
 class Pyproject:
@@ -138,11 +138,16 @@ class Pyproject:
 
         return dependencies
 
-    def update_dependencies(self, latest: bool = False) -> None:
+    def update_dependencies(
+        self,
+        latest: bool = False,
+        no_exact: bool = False,
+    ) -> None:
         """Update dependencies and bump their version in pyproject
 
         Args:
             latest: Whether to update dependencies to their latest version
+            no_exact: Whether to skip dependencies with an exact version
         """
 
         if latest:
@@ -152,6 +157,9 @@ class Pyproject:
             # other
             groups = {}
             for dependency in self.list_dependencies():
+                if no_exact and dependency.constraint == "":
+                    # skip dependencies with an exact version
+                    continue
                 if type(dependency.version) is items.String:
                     groups[dependency.group] = groups.get(
                         dependency.group, []

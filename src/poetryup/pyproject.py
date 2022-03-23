@@ -1,7 +1,7 @@
 import logging
 import re
 import subprocess
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Optional, Union
 
 import tomlkit
@@ -14,13 +14,23 @@ class Dependency:
     """A class to represent a dependency"""
 
     name: str
-    normalized_name: str = field(init=False)
     version: Union[items.String, items.InlineTable, items.Array]
     group: str
 
-    def __post_init__(self):
+    @property
+    def normalized_name(self) -> str:
         # https://www.python.org/dev/peps/pep-0503/#normalized-names
-        self.normalized_name = self.name.replace("_", "-").lower()
+        return self.name.replace("_", "-").lower()
+
+    @property
+    def constraint(self) -> str:
+        if type(self.version) is items.String:
+            if self.version[0].startswith(("^", "~")):
+                return self.version[0]
+        elif type(self.version) is items.InlineTable:
+            if self.version.get("version", "").startswith(("^", "~")):
+                return self.version["version"][0]
+        return ""
 
 
 class Pyproject:
@@ -116,18 +126,15 @@ class Pyproject:
                 )
                 continue
 
-            constraint = ""
             if type(dependency.version) is items.String:
-                if dependency.version[0].startswith(("^", "~")):
-                    constraint = dependency.version[0]
-                dependency.version = constraint + lock_dep.version
+                dependency.version = dependency.constraint + lock_dep.version
             elif (
                 type(dependency.version) is items.InlineTable
                 and dependency.version.get("version") is not None
             ):
-                if dependency.version["version"].startswith(("^", "~")):
-                    constraint = dependency.version["version"][0]
-                dependency.version["version"] = constraint + lock_dep.version
+                dependency.version["version"] = (
+                    dependency.constraint + lock_dep.version
+                )
 
         return dependencies
 

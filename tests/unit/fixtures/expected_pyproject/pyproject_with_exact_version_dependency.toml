@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "test-poetryup"
+version = "0.1.0"
+description = "Test PoetryUp"
+authors = ["Mousa Zeid Baker"]
+packages = [
+    { include = "test_poetryup", from = "src" }
+]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/MousaZeidBaker/poetryup"
+repository = "https://github.com/MousaZeidBaker/poetryup"
+keywords=[
+    "packaging",
+    "dependency",
+    "poetry",
+    "poetryup",
+]
+include = ["LICENSE"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+poetryup = "0.2.0"
+
+[tool.poetry.dev-dependencies]
+
+[tool.poetry.scripts]
+poetryup = "src.test_poetryup.test_poetryup:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

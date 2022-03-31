@@ -27,7 +27,7 @@ include = ["LICENSE"]
 [tool.poetry.dependencies]
 python = "^3.6"
 tomlkit = "^0.8.0"
-typer = "^0.4.0"
+typer = "^0.4.1"
 packaging = "^21.3"
 
 [tool.poetry.dev-dependencies]

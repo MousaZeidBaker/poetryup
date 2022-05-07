@@ -27,8 +27,6 @@ def test_update_dependencies(
     pyproject = Pyproject(pyproject_str)
     pyproject.update_dependencies()
 
-    assert pyproject.dumps() == expected_pyproject_str
-
     table = pyproject.pyproject["tool"]["poetry"]["dependencies"]
     assert table["poetryup"] == "^0.2.0"
 
@@ -99,3 +97,12 @@ def test_search_dependency_non_existent(
 ) -> None:
     pyproject = Pyproject(pyproject_str)
     assert pyproject.search_dependency("non_existent") is None
+
+
+def test_dumps(
+    mock_poetry_commands,
+) -> None:
+    pyproject = Pyproject(pyproject_str)
+    pyproject.update_dependencies()
+
+    assert pyproject.dumps() == expected_pyproject_str

@@ -1,16 +1,26 @@
-from dataclasses import dataclass
 from typing import Union
 
 from tomlkit import items
 
 
-@dataclass
 class Dependency:
-    """A class to represent a dependency"""
+    """A class to represent a dependency
 
-    name: str
-    version: Union[items.String, items.InlineTable, items.Array]
-    group: str
+    Args:
+        name: The name of the dependency
+        version: The version of the dependency
+        group: The group of the dependency
+    """
+
+    def __init__(
+        self,
+        name: str,
+        version: Union[items.String, items.InlineTable, items.Array],
+        group: str,
+    ) -> None:
+        self.name = name
+        self.version = version
+        self.group = group
 
     @property
     def normalized_name(self) -> str:

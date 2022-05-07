@@ -76,3 +76,26 @@ def test_update_dependencies_latest(
         ),
     ]
     mock.assert_has_calls(calls)
+
+
+def test_search_dependency(
+    mock_poetry_commands,
+) -> None:
+    pyproject = Pyproject(pyproject_str)
+    name = pyproject.dependencies[0].name
+    assert pyproject.search_dependency(name) is not None
+
+
+def test_search_dependency_by_normalized_name(
+    mock_poetry_commands,
+) -> None:
+    pyproject = Pyproject(pyproject_str)
+    normalized_name = pyproject.dependencies[0].normalized_name
+    assert pyproject.search_dependency(normalized_name) is not None
+
+
+def test_search_dependency_non_existent(
+    mock_poetry_commands,
+) -> None:
+    pyproject = Pyproject(pyproject_str)
+    assert pyproject.search_dependency("non_existent") is None

@@ -1,6 +1,4 @@
-from typing import Union
-
-from tomlkit import items
+from typing import Dict, List, Union
 
 
 class Dependency:
@@ -15,7 +13,7 @@ class Dependency:
     def __init__(
         self,
         name: str,
-        version: Union[items.String, items.InlineTable, items.Array],
+        version: Union[str, Dict, List],
         group: str,
     ) -> None:
         self.name = name
@@ -29,10 +27,10 @@ class Dependency:
 
     @property
     def constraint(self) -> str:
-        if type(self.version) is items.String:
+        if isinstance(self.version, str):
             if self.version[0].startswith(("^", "~")):
                 return self.version[0]
-        elif type(self.version) is items.InlineTable:
+        elif isinstance(self.version, Dict):
             if self.version.get("version", "").startswith(("^", "~")):
                 return self.version["version"][0]
         return ""  # dependencies with exact version or multiple versions

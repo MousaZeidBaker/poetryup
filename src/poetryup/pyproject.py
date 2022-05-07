@@ -1,11 +1,10 @@
 import logging
 import re
 import subprocess
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import tomlkit
 from packaging import version as version_
-from tomlkit import items
 
 from poetryup.dependency import Dependency
 
@@ -103,10 +102,10 @@ class Pyproject:
                 )
                 continue
 
-            if type(dependency.version) is items.String:
+            if isinstance(dependency.version, str):
                 dependency.version = dependency.constraint + lock_dep.version
             elif (
-                type(dependency.version) is items.InlineTable
+                isinstance(dependency.version, Dict)
                 and dependency.version.get("version") is not None
             ):
                 dependency.version["version"] = (
@@ -137,7 +136,7 @@ class Pyproject:
                 if skip_exact and dependency.constraint == "":
                     # skip dependencies with an exact version
                     continue
-                if type(dependency.version) is items.String:
+                if isinstance(dependency.version, str):
                     groups[dependency.group] = groups.get(
                         dependency.group, []
                     ) + [f"{dependency.name}@latest"]

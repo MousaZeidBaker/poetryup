@@ -77,7 +77,7 @@ class Pyproject:
         # run poetry show to get currently installed dependencies
         output = self.__run_poetry_show()
 
-        # extract dependencies from each line of the output
+        # create dependencies from each line of the output
         pattern = re.compile("^[a-zA-Z-]+")
         lock_dependencies: List[Dependency] = []
         for line in output.split("\n"):
@@ -88,42 +88,85 @@ class Pyproject:
             # extract name and version
             lock_name, lock_version, *_ = line.split()
 
-            # find dependency in pyproject.toml file
-            dependency = self.search_dependency(lock_name)
+            # search for dependency in pyproject
+            dependency = self.search_dependency(self.dependencies, lock_name)
             if dependency is None:
-                # not found in pyproject.toml, continue to next
+                # dependency not found, continue to next
                 continue
 
-            # replace version with lock version
+            lock_dependencies.append(
+                Dependency(
+                    name=dependency.name,
+                    version=lock_version,
+                    group=dependency.group,
+                )
+            )
+
+        return lock_dependencies
+
+    @property
+    def bumped_dependencies(self) -> List[Dependency]:
+        """The pyproject dependencies with their versions bumped"""
+
+        lock_dependencies = self.lock_dependencies
+
+        bumped_dependencies: List[Dependency] = []
+        for dependency in self.dependencies:
+            # search for lock dependency
+            lock_dependency = self.search_dependency(
+                lock_dependencies,
+                dependency.name,
+            )
+
             if isinstance(dependency.version, str):
-                dependency.version = dependency.constraint + lock_version
+                bumped_dependencies.append(
+                    Dependency(
+                        name=dependency.name,
+                        version=dependency.constraint + lock_dependency.version,
+                        group=dependency.group,
+                    )
+                )
             elif (
                 isinstance(dependency.version, Dict)
                 and dependency.version.get("version") is not None
             ):
-                dependency.version["version"] = (
-                    dependency.constraint + lock_version
+                version = dependency.version
+                version["version"] = (
+                    dependency.constraint + lock_dependency.version
                 )
-            lock_dependencies.append(dependency)
+                bumped_dependencies.append(
+                    Dependency(
+                        name=dependency.name,
+                        version=version,
+                        group=dependency.group,
+                    )
+                )
+            else:
+                bumped_dependencies.append(dependency)
 
-        return lock_dependencies
+        return bumped_dependencies
 
     def dumps(self) -> str:
         """Dumps pyproject into a string."""
 
         return tomlkit.dumps(self.pyproject)
 
-    def search_dependency(self, name: str) -> Union[Dependency, None]:
-        """Searches for a dependency given a name
+    def search_dependency(
+        self,
+        dependencies: List[Dependency],
+        name: str,
+    ) -> Union[Dependency, None]:
+        """Search for a dependency by name given a list of dependencies
 
         Args:
+            dependencies: A list of dependencies to search in
             name: Name of the dependency to search for
 
         Returns:
             A dependency if found, None if not found
         """
 
-        for dependency in self.dependencies:
+        for dependency in dependencies:
             if dependency.name == name or dependency.normalized_name == name:
                 return dependency
 
@@ -165,7 +208,7 @@ class Pyproject:
 
         # bump versions in pyproject
         table = self.pyproject["tool"]["poetry"]
-        for dependency in self.lock_dependencies:
+        for dependency in self.bumped_dependencies:
             if dependency.group == "default":
                 table["dependencies"][dependency.name] = dependency.version
             elif (

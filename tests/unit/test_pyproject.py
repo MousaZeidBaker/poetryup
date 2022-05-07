@@ -83,7 +83,13 @@ def test_search_dependency(
 ) -> None:
     pyproject = Pyproject(pyproject_str)
     name = pyproject.dependencies[0].name
-    assert pyproject.search_dependency(name) is not None
+    assert (
+        pyproject.search_dependency(
+            pyproject.dependencies,
+            name,
+        )
+        is not None
+    )
 
 
 def test_search_dependency_by_normalized_name(
@@ -91,14 +97,26 @@ def test_search_dependency_by_normalized_name(
 ) -> None:
     pyproject = Pyproject(pyproject_str)
     normalized_name = pyproject.dependencies[0].normalized_name
-    assert pyproject.search_dependency(normalized_name) is not None
+    assert (
+        pyproject.search_dependency(
+            pyproject.dependencies,
+            normalized_name,
+        )
+        is not None
+    )
 
 
 def test_search_dependency_non_existent(
     mock_poetry_commands,
 ) -> None:
     pyproject = Pyproject(pyproject_str)
-    assert pyproject.search_dependency("non_existent") is None
+    assert (
+        pyproject.search_dependency(
+            pyproject.dependencies,
+            "non_existent",
+        )
+        is None
+    )
 
 
 def test_dumps(

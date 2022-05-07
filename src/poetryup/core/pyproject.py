@@ -1,7 +1,7 @@
 import logging
 import re
 import subprocess
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 import tomlkit
 from packaging import version as version_
@@ -23,14 +23,15 @@ class Pyproject:
     def __init__(self, pyproject_str: str) -> None:
         self.pyproject = tomlkit.loads(pyproject_str)
         self.poetry_version = version_.parse(self.__get_poetry_version())
+        self._dependencies = None  # caches the dependencies
 
-    def dumps(self) -> str:
-        """Dumps pyproject into a string."""
+    @property
+    def dependencies(self) -> List[Dependency]:
+        """The pyproject dependencies"""
 
-        return tomlkit.dumps(self.pyproject)
-
-    def list_dependencies(self) -> List[Dependency]:
-        """Returns pyproject dependencies"""
+        if self._dependencies is not None:
+            # return cached dependencies
+            return self._dependencies
 
         dependencies: List[Dependency] = []
         table = self.pyproject["tool"]["poetry"]
@@ -66,53 +67,65 @@ class Pyproject:
                 )
                 dependencies.append(dependency)
 
+        self._dependencies = dependencies  # log dependencies for future access
         return dependencies
 
-    def list_lock_dependencies(self) -> List[Dependency]:
-        """Returns pyproject dependencies with their lock version"""
+    @property
+    def lock_dependencies(self) -> List[Dependency]:
+        """The pyproject dependencies with their lock version"""
 
-        # create list of lock dependencies
+        # run poetry show to get currently installed dependencies
         output = self.__run_poetry_show()
-        pattern = re.compile("^[a-zA-Z-]+")
-        lock_deps: List[Dependency] = []
-        for line in output.split("\n"):
-            if pattern.match(line) is not None:
-                name, version, *_ = line.split()
-                dependency = Dependency(
-                    name=name,
-                    version=version,
-                    group="",
-                )
-                lock_deps.append(dependency)
 
-        # list dependencies from pyproject and set version to lock version
-        dependencies = self.list_dependencies()
-        for dependency in dependencies:
-            lock_dep = next(
-                (
-                    lock_dep
-                    for lock_dep in lock_deps
-                    if lock_dep.normalized_name == dependency.normalized_name
-                ),
-                None,
-            )
-            if lock_dep is None:
-                logging.info(
-                    f"Couldn't find lock dependency for '{dependency.name}'"
-                )
+        # extract dependencies from each line of the output
+        pattern = re.compile("^[a-zA-Z-]+")
+        lock_dependencies: List[Dependency] = []
+        for line in output.split("\n"):
+            if pattern.match(line) is None:
+                # not a matching line, continue to next
                 continue
 
+            # extract name and version
+            lock_name, lock_version, *_ = line.split()
+
+            # find dependency in pyproject.toml file
+            dependency = self.search_dependency(lock_name)
+            if dependency is None:
+                # not found in pyproject.toml, continue to next
+                continue
+
+            # replace version with lock version
             if isinstance(dependency.version, str):
-                dependency.version = dependency.constraint + lock_dep.version
+                dependency.version = dependency.constraint + lock_version
             elif (
                 isinstance(dependency.version, Dict)
                 and dependency.version.get("version") is not None
             ):
                 dependency.version["version"] = (
-                    dependency.constraint + lock_dep.version
+                    dependency.constraint + lock_version
                 )
+            lock_dependencies.append(dependency)
 
-        return dependencies
+        return lock_dependencies
+
+    def dumps(self) -> str:
+        """Dumps pyproject into a string."""
+
+        return tomlkit.dumps(self.pyproject)
+
+    def search_dependency(self, name: str) -> Union[Dependency, None]:
+        """Searches for a dependency given a name
+
+        Args:
+            name: Name of the dependency to search for
+
+        Returns:
+            A dependency if found, None if not found
+        """
+
+        for dependency in self.dependencies:
+            if dependency.name == name or dependency.normalized_name == name:
+                return dependency
 
     def update_dependencies(
         self,
@@ -132,7 +145,7 @@ class Pyproject:
             # to avoid version solver error in case dependencies depend on each
             # other
             groups = {}
-            for dependency in self.list_dependencies():
+            for dependency in self.dependencies:
                 if skip_exact and dependency.constraint == "":
                     # skip dependencies with an exact version
                     continue
@@ -152,7 +165,7 @@ class Pyproject:
 
         # bump versions in pyproject
         table = self.pyproject["tool"]["poetry"]
-        for dependency in self.list_lock_dependencies():
+        for dependency in self.lock_dependencies:
             if dependency.group == "default":
                 table["dependencies"][dependency.name] = dependency.version
             elif (

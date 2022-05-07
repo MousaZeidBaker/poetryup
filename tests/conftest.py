@@ -1,7 +1,7 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from poetryup.pyproject import Pyproject
+from poetryup.core.pyproject import Pyproject
 
 
 @pytest.fixture(scope="function")

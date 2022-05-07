@@ -1,4 +1,4 @@
-from poetryup.dependency import Dependency
+from poetryup.models.dependency import Dependency
 
 
 def test_normalized_name() -> None:

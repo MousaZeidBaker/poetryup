@@ -6,7 +6,7 @@ from typing import Dict, List, Optional
 import tomlkit
 from packaging import version as version_
 
-from poetryup.dependency import Dependency
+from poetryup.models.dependency import Dependency
 
 
 class Pyproject:

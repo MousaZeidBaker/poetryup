@@ -6,7 +6,7 @@ from pathlib import Path
 
 import typer
 
-from poetryup.pyproject import Pyproject
+from poetryup.core.pyproject import Pyproject
 
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO").upper())
 

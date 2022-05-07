@@ -3,7 +3,7 @@ from pathlib import Path
 
 from pytest_mock import MockerFixture
 
-from poetryup.pyproject import Pyproject
+from poetryup.core.pyproject import Pyproject
 
 
 def test_update_dependencies(

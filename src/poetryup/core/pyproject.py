@@ -67,7 +67,7 @@ class Pyproject:
                 )
                 dependencies.append(dependency)
 
-        self._dependencies = dependencies  # log dependencies for future access
+        self._dependencies = dependencies  # cache dependencies
         return dependencies
 
     @property

@@ -33,7 +33,8 @@ def test_update_dependencies(
     table = pyproject.pyproject["tool"]["poetry"]["group"]["main"][
         "dependencies"
     ]
-    assert table["poetryup_tilde"] == "^0.2.0"
+    assert table["poetryup_caret"] == "^0.2.0"
+    assert table["poetryup_tilde"] == "~0.2.0"
     assert table["poetryup_exact"] == "0.2.0"
     assert table["poetryup_restricted"] == {
         "version": "^0.2.0",
@@ -65,6 +66,7 @@ def test_update_dependencies_latest(
         ),
         call(
             packages=[
+                "poetryup_caret@latest",
                 "poetryup_tilde@latest",
                 "poetryup_exact@latest",
                 "poetryup_underscore@latest",

@@ -106,7 +106,12 @@ class Pyproject:
 
     @property
     def bumped_dependencies(self) -> List[Dependency]:
-        """The pyproject dependencies with their versions bumped"""
+        """The pyproject dependencies with their version bumped to lock version
+
+        Lock versions will be used if applicable. For instance, using the lock
+        version for a dependency that is specified with the inequality
+        constraint '!=x.y.z' would completely change its meaning.
+        """
 
         lock_dependencies = self.lock_dependencies
 

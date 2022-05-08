@@ -1,6 +1,8 @@
+from dataclasses import dataclass
 from typing import Dict, List, Union
 
 
+@dataclass(frozen=True)
 class Dependency:
     """A class to represent a dependency
 
@@ -10,15 +12,9 @@ class Dependency:
         group: The group of the dependency
     """
 
-    def __init__(
-        self,
-        name: str,
-        version: Union[str, Dict, List],
-        group: str,
-    ) -> None:
-        self.name = name
-        self.version = version
-        self.group = group
+    name: str
+    version: Union[str, Dict, List]
+    group: str
 
     @property
     def normalized_name(self) -> str:

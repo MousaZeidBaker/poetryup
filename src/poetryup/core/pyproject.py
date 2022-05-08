@@ -123,31 +123,23 @@ class Pyproject:
                 dependency.name,
             )
 
-            if isinstance(dependency.version, str):
-                bumped_dependencies.append(
-                    Dependency(
-                        name=dependency.name,
-                        version=dependency.constraint + lock_dependency.version,
-                        group=dependency.group,
-                    )
-                )
+            version = dependency.version
+            if isinstance(version, str):
+                version = dependency.constraint + lock_dependency.version
             elif (
-                isinstance(dependency.version, Dict)
-                and dependency.version.get("version") is not None
+                isinstance(version, Dict) and version.get("version") is not None
             ):
-                version = dependency.version
                 version["version"] = (
                     dependency.constraint + lock_dependency.version
                 )
-                bumped_dependencies.append(
-                    Dependency(
-                        name=dependency.name,
-                        version=version,
-                        group=dependency.group,
-                    )
+
+            bumped_dependencies.append(
+                Dependency(
+                    name=dependency.name,
+                    version=version,
+                    group=dependency.group,
                 )
-            else:
-                bumped_dependencies.append(dependency)
+            )
 
         return bumped_dependencies
 

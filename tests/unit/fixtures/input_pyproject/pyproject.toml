@@ -22,7 +22,16 @@ include = ["LICENSE"]
 python = "^3.6"
 poetryup = "^0.1.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.main.dependencies]
+poetryup_caret = "^0.1.0"
+poetryup_tilde = "~0.1.0"
+poetryup_exact = "0.1.0"
+poetryup_restricted = { version = "^0.1.0", python = "<3.7" }
+poetryup_git = { git = "https://github.com/MousaZeidBaker/poetryup.git" }
+poetryup_underscore = "^0.1.0"
+Poetryup_Capital = "^0.1.0"
+
+[tool.poetry.group.dev.dependencies]
 
 [tool.poetry.scripts]
 poetryup = "src.test_poetryup.test_poetryup:main"

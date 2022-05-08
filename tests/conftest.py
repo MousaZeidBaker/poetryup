@@ -1,7 +1,7 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from poetryup.pyproject import Pyproject
+from poetryup.core.pyproject import Pyproject
 
 
 @pytest.fixture(scope="function")
@@ -18,10 +18,28 @@ def mock_poetry_commands(mocker: MockerFixture) -> None:
         Pyproject,
         "_Pyproject__run_poetry_show",
         return_value=(
-            "poetryup 0.2.0 Update dependencies and bump their version in the "
+            "poetryup 0.2.0 "
             "pyproject.toml file"
             "\n└── toml >=0.10.2,<0.11.0\n"
-            "poetryup-extra 0.2.0 "
+            "poetryup-caret 0.2.0 "
+            "pyproject.toml file"
+            "\n└── toml >=0.10.2,<0.11.0\n"
+            "poetryup-tilde 0.2.0 "
+            "pyproject.toml file"
+            "\n└── toml >=0.10.2,<0.11.0\n"
+            "poetryup-exact 0.2.0 "
+            "pyproject.toml file"
+            "\n└── toml >=0.10.2,<0.11.0\n"
+            "poetryup-restricted 0.2.0 "
+            "pyproject.toml file"
+            "\n└── toml >=0.10.2,<0.11.0\n"
+            "poetryup-git 0.2.0 "
+            "pyproject.toml file"
+            "\n└── toml >=0.10.2,<0.11.0\n"
+            "poetryup-underscore 0.2.0 "
+            "pyproject.toml file"
+            "\n└── toml >=0.10.2,<0.11.0\n"
+            "poetryup-capital 0.2.0 "
             "pyproject.toml file"
             "\n└── toml >=0.10.2,<0.11.0\n"
         ),

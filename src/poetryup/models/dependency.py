@@ -8,7 +8,7 @@ class Constraint(str, Enum):
     CARET = "caret"
     TILDE = "tilde"
     WILDCARD = "wildcard"
-    INEQUALITY = "Inequality"
+    INEQUALITY = "inequality"
     EXACT = "exact"
     MULTIPLE_REQUIREMENTS = "multiple_requirements"
     MULTIPLE_CONSTRAINTS = "multiple_constraint"

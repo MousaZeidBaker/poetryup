@@ -10,48 +10,48 @@ def test_normalized_name() -> None:
     assert dependency.normalized_name == "poetry-up"
 
 
-def test_constraint_type() -> None:
+def test_constraint() -> None:
     dependency = Dependency(
         name="poetryup",
         version="^0.1.0",
         group="default",
     )
-    assert dependency.constraint_type == Constraint.CARET
+    assert dependency.constraint == Constraint.CARET
 
     dependency = Dependency(
         name="poetryup",
         version="~0.1.0",
         group="default",
     )
-    assert dependency.constraint_type == Constraint.TILDE
+    assert dependency.constraint == Constraint.TILDE
 
     dependency = Dependency(
         name="poetryup",
         version="0.*",
         group="default",
     )
-    assert dependency.constraint_type == Constraint.WILDCARD
+    assert dependency.constraint == Constraint.WILDCARD
 
     dependency = Dependency(
         name="poetryup",
         version="!=0.1.0",
         group="default",
     )
-    assert dependency.constraint_type == Constraint.INEQUALITY
+    assert dependency.constraint == Constraint.INEQUALITY
 
     dependency = Dependency(
         name="poetryup",
         version="0.1.0",
         group="default",
     )
-    assert dependency.constraint_type == Constraint.EXACT
+    assert dependency.constraint == Constraint.EXACT
 
     dependency = Dependency(
         name="poetryup",
         version=">=0.1.0,<0.2.0",
         group="default",
     )
-    assert dependency.constraint_type == Constraint.MULTIPLE_REQUIREMENTS
+    assert dependency.constraint == Constraint.MULTIPLE_REQUIREMENTS
 
     dependency = Dependency(
         name="poetryup",
@@ -61,4 +61,4 @@ def test_constraint_type() -> None:
         ],
         group="default",
     )
-    assert dependency.constraint_type == Constraint.MULTIPLE_CONSTRAINTS
+    assert dependency.constraint == Constraint.MULTIPLE_CONSTRAINTS

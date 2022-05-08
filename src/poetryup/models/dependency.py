@@ -34,7 +34,7 @@ class Dependency:
         return self.name.replace("_", "-").lower()
 
     @property
-    def constraint_type(self) -> Constraint:
+    def constraint(self) -> Constraint:
         if isinstance(self.version, List):
             return Constraint.MULTIPLE_CONSTRAINTS
 

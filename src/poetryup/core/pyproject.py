@@ -117,13 +117,13 @@ class Pyproject:
 
         bumped_dependencies: List[Dependency] = []
         for dependency in self.dependencies:
-            constraint_type = dependency.constraint_type
+            constraint = dependency.constraint
 
             # check for dependencies whom version can't be bumped
             if (
-                constraint_type == Constraint.MULTIPLE_CONSTRAINTS
-                or constraint_type == Constraint.MULTIPLE_REQUIREMENTS
-                or constraint_type == Constraint.WILDCARD
+                constraint == Constraint.MULTIPLE_CONSTRAINTS
+                or constraint == Constraint.MULTIPLE_REQUIREMENTS
+                or constraint == Constraint.WILDCARD
             ):
                 bumped_dependencies.append(dependency)
                 continue
@@ -139,11 +139,11 @@ class Pyproject:
                 continue
 
             bumped_version = None
-            if constraint_type == Constraint.CARET:
+            if constraint == Constraint.CARET:
                 bumped_version = "^" + lock_dependency.version
-            elif constraint_type == Constraint.TILDE:
+            elif constraint == Constraint.TILDE:
                 bumped_version = "~" + lock_dependency.version
-            elif constraint_type == Constraint.INEQUALITY:
+            elif constraint == Constraint.INEQUALITY:
                 version_str = ""
                 if isinstance(dependency.version, str):
                     version_str = dependency.version
@@ -152,7 +152,7 @@ class Pyproject:
 
                 if version_str[:2] == ">=":
                     bumped_version = ">=" + lock_dependency.version
-            elif constraint_type == Constraint.EXACT:
+            elif constraint == Constraint.EXACT:
                 bumped_version = lock_dependency.version
 
             version = dependency.version
@@ -219,10 +219,7 @@ class Pyproject:
             # other
             groups = {}
             for dependency in self.dependencies:
-                if (
-                    skip_exact
-                    and dependency.constraint_type == Constraint.EXACT
-                ):
+                if skip_exact and dependency.constraint == Constraint.EXACT:
                     # skip dependencies with an exact version
                     continue
                 if isinstance(dependency.version, str):

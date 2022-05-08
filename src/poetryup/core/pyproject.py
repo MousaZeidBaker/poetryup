@@ -6,7 +6,7 @@ from typing import Dict, List, Optional, Union
 import tomlkit
 from packaging import version as version_
 
-from poetryup.models.dependency import Dependency
+from poetryup.models.dependency import Constraint, Dependency
 
 
 class Pyproject:
@@ -117,21 +117,54 @@ class Pyproject:
 
         bumped_dependencies: List[Dependency] = []
         for dependency in self.dependencies:
+            constraint_type = dependency.constraint_type
+
+            # check for dependencies whom version can't be bumped
+            if (
+                constraint_type == Constraint.MULTIPLE_CONSTRAINTS
+                or constraint_type == Constraint.MULTIPLE_REQUIREMENTS
+                or constraint_type == Constraint.WILDCARD
+            ):
+                bumped_dependencies.append(dependency)
+                continue
+
             # search for lock dependency
             lock_dependency = self.search_dependency(
                 lock_dependencies,
                 dependency.name,
             )
+            if lock_dependency is None:
+                # lock dependency not found, dependency stays unchanged
+                bumped_dependencies.append(dependency)
+                continue
+
+            bumped_version = None
+            if constraint_type == Constraint.CARET:
+                bumped_version = "^" + lock_dependency.version
+            elif constraint_type == Constraint.TILDE:
+                bumped_version = "~" + lock_dependency.version
+            elif constraint_type == Constraint.INEQUALITY:
+                version_str = ""
+                if isinstance(dependency.version, str):
+                    version_str = dependency.version
+                elif isinstance(dependency.version, Dict):
+                    version_str = dependency.version.get("version", "")
+
+                if version_str[:2] == ">=":
+                    bumped_version = ">=" + lock_dependency.version
+            elif constraint_type == Constraint.EXACT:
+                bumped_version = lock_dependency.version
 
             version = dependency.version
-            if isinstance(version, str):
-                version = dependency.constraint + lock_dependency.version
+            if bumped_version is None:
+                # bump version can't be determined, version stays unchanged
+                pass
+            elif isinstance(version, str):
+                version = bumped_version
             elif (
                 isinstance(version, Dict) and version.get("version") is not None
             ):
-                version["version"] = (
-                    dependency.constraint + lock_dependency.version
-                )
+                version["version"] = bumped_version
 
             bumped_dependencies.append(
                 Dependency(
@@ -186,7 +219,10 @@ class Pyproject:
             # other
             groups = {}
             for dependency in self.dependencies:
-                if skip_exact and dependency.constraint == "":
+                if (
+                    skip_exact
+                    and dependency.constraint_type == Constraint.EXACT
+                ):
                     # skip dependencies with an exact version
                     continue
                 if isinstance(dependency.version, str):

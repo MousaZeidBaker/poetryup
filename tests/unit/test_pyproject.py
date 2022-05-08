@@ -35,7 +35,18 @@ def test_update_dependencies(
     ]
     assert table["poetryup_caret"] == "^0.2.0"
     assert table["poetryup_tilde"] == "~0.2.0"
+    assert table["poetryup_wildcard"] == "*"
+    assert table["poetryup_inequality_greater_than"] == ">0.1.0"
+    assert table["poetryup_inequality_greater_than_or_equal"] == ">=0.2.0"
+    assert table["poetryup_inequality_less_than"] == "<0.1.0"
+    assert table["poetryup_inequality_less_than_or_equal"] == "<=0.1.0"
+    assert table["poetryup_inequality_not_equal"] == "!=0.1.0"
     assert table["poetryup_exact"] == "0.2.0"
+    assert table["poetryup_multiple_requirements"] == ">=0.1.0,<0.2.0"
+    assert table["poetryup_multiple_constraints"] == [
+        {"version": "0.1.0", "python": "^2.7"},
+        {"version": ">=0.2.0", "python": ">=3.7"},
+    ]
     assert table["poetryup_restricted"] == {
         "version": "^0.2.0",
         "python": "<3.7",
@@ -68,7 +79,14 @@ def test_update_dependencies_latest(
             packages=[
                 "poetryup_caret@latest",
                 "poetryup_tilde@latest",
+                "poetryup_wildcard@latest",
+                "poetryup_inequality_greater_than@latest",
+                "poetryup_inequality_greater_than_or_equal@latest",
+                "poetryup_inequality_less_than@latest",
+                "poetryup_inequality_less_than_or_equal@latest",
+                "poetryup_inequality_not_equal@latest",
                 "poetryup_exact@latest",
+                "poetryup_multiple_requirements@latest",
                 "poetryup_underscore@latest",
                 "Poetryup_Capital@latest",
             ],

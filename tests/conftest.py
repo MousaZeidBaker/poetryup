@@ -14,35 +14,31 @@ def mock_poetry_commands(mocker: MockerFixture) -> None:
         return_value="1.1.0",
     )
 
+    dependencies = [
+        "poetryup",
+        "poetryup-caret",
+        "poetryup-tilde",
+        "poetryup-wildcard",
+        "poetryup-inequality-greater-than",
+        "poetryup-inequality-greater-than-or-equal",
+        "poetryup-inequality-less-than",
+        "poetryup-inequality-less-than-or-equal",
+        "poetryup-inequality-not-equal",
+        "poetryup-exact",
+        "poetryup-multiple-requirements",
+        "poetryup-multiple-constraints",
+        "poetryup-restricted",
+        "poetryup-git",
+        "poetryup-underscore",
+        "poetryup-capital",
+    ]
+    s = " 0.2.0 Some description\n└── some-package >=0.10.2,<0.11.0\n"
+    return_value = s.join(dependencies) + s
+
     mocker.patch.object(
         Pyproject,
         "_Pyproject__run_poetry_show",
-        return_value=(
-            "poetryup 0.2.0 "
-            "pyproject.toml file"
-            "\n└── toml >=0.10.2,<0.11.0\n"
-            "poetryup-caret 0.2.0 "
-            "pyproject.toml file"
-            "\n└── toml >=0.10.2,<0.11.0\n"
-            "poetryup-tilde 0.2.0 "
-            "pyproject.toml file"
-            "\n└── toml >=0.10.2,<0.11.0\n"
-            "poetryup-exact 0.2.0 "
-            "pyproject.toml file"
-            "\n└── toml >=0.10.2,<0.11.0\n"
-            "poetryup-restricted 0.2.0 "
-            "pyproject.toml file"
-            "\n└── toml >=0.10.2,<0.11.0\n"
-            "poetryup-git 0.2.0 "
-            "pyproject.toml file"
-            "\n└── toml >=0.10.2,<0.11.0\n"
-            "poetryup-underscore 0.2.0 "
-            "pyproject.toml file"
-            "\n└── toml >=0.10.2,<0.11.0\n"
-            "poetryup-capital 0.2.0 "
-            "pyproject.toml file"
-            "\n└── toml >=0.10.2,<0.11.0\n"
-        ),
+        return_value=return_value,
     )
 
     mocker.patch.object(

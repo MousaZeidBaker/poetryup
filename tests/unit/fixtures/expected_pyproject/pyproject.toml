@@ -25,7 +25,18 @@ poetryup = "^0.2.0"
 [tool.poetry.group.main.dependencies]
 poetryup_caret = "^0.2.0"
 poetryup_tilde = "~0.2.0"
+poetryup_wildcard = "*"
+poetryup_inequality_greater_than = ">0.1.0"
+poetryup_inequality_greater_than_or_equal = ">=0.2.0"
+poetryup_inequality_less_than = "<0.1.0"
+poetryup_inequality_less_than_or_equal = "<=0.1.0"
+poetryup_inequality_not_equal = "!=0.1.0"
 poetryup_exact = "0.2.0"
+poetryup_multiple_requirements = ">=0.1.0,<0.2.0"
+poetryup_multiple_constraints = [
+    {version = "0.1.0", python = "^2.7"},
+    {version = ">=0.2.0", python = ">=3.7"},
+]
 poetryup_restricted = { version = "^0.2.0", python = "<3.7" }
 poetryup_git = { git = "https://github.com/MousaZeidBaker/poetryup.git" }
 poetryup_underscore = "^0.2.0"

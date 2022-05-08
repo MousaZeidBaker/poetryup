@@ -10,29 +10,6 @@ def test_normalized_name() -> None:
     assert dependency.normalized_name == "poetry-up"
 
 
-def test_constraint() -> None:
-    dependency = Dependency(
-        name="poetry_up",
-        version="^0.1.0",
-        group="default",
-    )
-    assert dependency.constraint == "^"
-
-    dependency = Dependency(
-        name="poetry_up",
-        version={"version": "^0.1.0"},
-        group="default",
-    )
-    assert dependency.constraint == "^"
-
-    dependency = Dependency(
-        name="poetry_up",
-        version=[],
-        group="default",
-    )
-    assert dependency.constraint == ""
-
-
 def test_constraint_type() -> None:
     dependency = Dependency(
         name="poetryup",

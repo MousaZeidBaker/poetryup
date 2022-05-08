@@ -34,16 +34,6 @@ class Dependency:
         return self.name.replace("_", "-").lower()
 
     @property
-    def constraint(self) -> str:
-        if isinstance(self.version, str):
-            if self.version[0].startswith(("^", "~")):
-                return self.version[0]
-        elif isinstance(self.version, Dict):
-            if self.version.get("version", "").startswith(("^", "~")):
-                return self.version["version"][0]
-        return ""  # dependencies with exact version or multiple versions
-
-    @property
     def constraint_type(self) -> Constraint:
         if isinstance(self.version, List):
             return Constraint.MULTIPLE_CONSTRAINTS

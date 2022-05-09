@@ -2,6 +2,7 @@
 
 import logging
 import os
+import subprocess
 from pathlib import Path
 
 import typer
@@ -36,6 +37,8 @@ def poetryup(
     pyproject = Pyproject(pyproject_str)
     pyproject.update_dependencies(latest, skip_exact)
     Path("pyproject.toml").write_text(pyproject.dumps())
+    # refresh the lock file after changes in pyproject.toml
+    subprocess.run(["poetry", "lock", "--no-update"])
 
 
 if __name__ == "__main__":

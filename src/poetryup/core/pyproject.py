@@ -1,6 +1,7 @@
 import logging
 import re
 import subprocess
+import sys
 from typing import Dict, List, Optional, Union
 
 import tomlkit
@@ -268,6 +269,9 @@ class Pyproject:
             The poetry version installed
         """
 
+        if sys.version_info == (3, 6):
+            return subprocess.check_output("poetry --version", encoding="UTF-8")
+
         return (
             subprocess.run(
                 ["poetry", "--version"],
@@ -286,6 +290,11 @@ class Pyproject:
         Returns:
             The output from the poetry show command
         """
+
+        if sys.version_info == (3, 6):
+            return subprocess.check_output(
+                "poetry show --tree", encoding="UTF-8"
+            )
 
         return subprocess.run(
             ["poetry", "show", "--tree"],

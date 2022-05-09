@@ -269,7 +269,7 @@ class Pyproject:
             The poetry version installed
         """
 
-        if sys.version_info == (3, 6):
+        if sys.version_info > (3, 7):
             return subprocess.check_output("poetry --version", encoding="UTF-8")
 
         return (
@@ -291,7 +291,7 @@ class Pyproject:
             The output from the poetry show command
         """
 
-        if sys.version_info == (3, 6):
+        if sys.version_info > (3, 7):
             return subprocess.check_output(
                 "poetry show --tree", encoding="UTF-8"
             )

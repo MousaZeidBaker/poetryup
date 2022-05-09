@@ -271,9 +271,8 @@ class Pyproject:
 
         if sys.version_info < (3, 7):
             return subprocess.check_output(
-                "poetry --version",
+                ["poetry", "--version"],
                 encoding="UTF-8",
-                shell=True,
             )
 
         return (
@@ -297,9 +296,8 @@ class Pyproject:
 
         if sys.version_info < (3, 7):
             return subprocess.check_output(
-                "poetry show --tree",
+                ["poetry", "show", "--tree"],
                 encoding="UTF-8",
-                shell=True,
             )
 
         return subprocess.run(

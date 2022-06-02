@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "poetryup"
-version = "0.7.1"
+version = "0.7.2"
 description = "Update dependencies and bump their version in the pyproject.toml file"
 authors = ["Mousa Zeid Baker"]
 packages = [
@@ -26,7 +26,7 @@ include = ["LICENSE"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
-tomlkit = "^0.8.0"
+tomlkit = "^0.11.0"
 typer = "^0.4.1"
 packaging = "^21.3"
 

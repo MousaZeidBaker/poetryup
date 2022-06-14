@@ -18,8 +18,31 @@ is that the latter also modifies the `pyproject.toml` file.
 ![poetryup_demo](https://raw.githubusercontent.com/MousaZeidBaker/poetryup/master/media/poetryup_demo.gif)
 
 ## Usage
+
+Show help message and exit
 ```shell
 poetryup --help
+```
+
+Update all dependencies with respect to their version constraints specified in the
+`pyproject.toml` file
+```shell
+poetryup
+```
+
+Update all dependencies to their latest available version
+```shell
+poetryup --latest
+```
+
+Update dependencies in the `default` and `dev` group to their latest available version
+```shell
+poetryup --latest --group defaut --group dev
+```
+
+Update the `foo` and `bar` dependencies to their latest available version
+```shell
+poetryup --latest --name foo --name bar
 ```
 
 ## Automate Dependency Updates with GitHub Actions

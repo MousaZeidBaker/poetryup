@@ -109,7 +109,7 @@ def test_update_dependencies_latest_skip_exact(
     )
     pyproject.update_dependencies(
         latest=True,
-        without_constraint=[Constraint.EXACT],
+        without_constraints=[Constraint.EXACT],
     )
 
     calls = [
@@ -148,7 +148,7 @@ def test_update_dependencies_latest_with_specific_group(
         "_Pyproject__run_poetry_add",
         return_value=None,
     )
-    pyproject.update_dependencies(latest=True, group=["main"])
+    pyproject.update_dependencies(latest=True, groups=["main"])
 
     calls = [
         call(
@@ -182,7 +182,7 @@ def test_update_dependencies_latest_with_specific_name(
         "_Pyproject__run_poetry_add",
         return_value=None,
     )
-    pyproject.update_dependencies(latest=True, name=["poetryup"])
+    pyproject.update_dependencies(latest=True, names=["poetryup"])
 
     calls = [
         call(
@@ -248,8 +248,8 @@ def test_filter_dependencies_without_constraint(
     pyproject = Pyproject(pyproject_str)
     expected = dependencies[1]
     actual = pyproject.filter_dependencies(
-        dependencies,
-        without_constraint=[Constraint.EXACT],
+        dependencies=dependencies,
+        without_constraints=[Constraint.EXACT],
     )
     assert actual == [expected]
 
@@ -272,8 +272,8 @@ def test_filter_dependencies_name(
     pyproject = Pyproject(pyproject_str)
     expected = dependencies[0]
     actual = pyproject.filter_dependencies(
-        dependencies,
-        name=[expected.name],
+        dependencies=dependencies,
+        names=[expected.name],
     )
     assert actual == [expected]
 
@@ -296,8 +296,8 @@ def test_filter_dependencies_group(
     pyproject = Pyproject(pyproject_str)
     expected = dependencies[0]
     actual = pyproject.filter_dependencies(
-        dependencies,
-        group=[expected.group],
+        dependencies=dependencies,
+        groups=[expected.group],
     )
     assert actual == [expected]
 

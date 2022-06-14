@@ -9,6 +9,7 @@ from typing import List
 import typer
 
 from poetryup.core.pyproject import Pyproject
+from poetryup.models.dependency import Constraint
 
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO").upper())
 
@@ -44,7 +45,8 @@ def poetryup(
         )
 
     pyproject = Pyproject(pyproject_str)
-    pyproject.update_dependencies(latest, skip_exact, name, group)
+    without_constraint = [Constraint.EXACT] if skip_exact else []
+    pyproject.update_dependencies(latest, without_constraint, name, group)
     Path("pyproject.toml").write_text(pyproject.dumps())
     # refresh the lock file after changes in pyproject.toml
     subprocess.run(["poetry", "lock", "--no-update"])

@@ -201,10 +201,45 @@ class Pyproject:
             if dependency.name == name or dependency.normalized_name == name:
                 return dependency
 
+    def filter_dependencies(
+        self,
+        dependencies: List[Dependency],
+        without_constraint: List[Constraint] = [],
+        name: List[str] = [],
+        group: List[str] = [],
+    ) -> Union[Dependency, None]:
+        """Search for a dependency by name given a list of dependencies
+
+        Args:
+            dependencies: A list of dependencies to filter
+            without_constraint: The dependency constraints to ignore
+            name: The dependency names to include
+            group: The dependency groups to include
+
+        Returns:
+            A list of dependencies
+        """
+
+        if without_constraint:
+            # remove deps whom constraint is in the provided constraint list
+            dependencies = [
+                x
+                for x in dependencies
+                if x.constraint not in without_constraint
+            ]
+        if name:
+            # remove deps whom name is NOT in the provided name list
+            dependencies = [x for x in dependencies if x.name in name]
+        if group:
+            # remove deps whom group is NOT in the provided group list
+            dependencies = [x for x in dependencies if x.group in group]
+
+        return dependencies
+
     def update_dependencies(
         self,
         latest: bool = False,
-        skip_exact: bool = False,
+        without_constraint: List[Constraint] = [],
         name: List[str] = [],
         group: List[str] = [],
     ) -> None:
@@ -212,27 +247,24 @@ class Pyproject:
 
         Args:
             latest: Whether to update dependencies to their latest version
-            skip_exact: Whether to skip dependencies with an exact version
+            without_constraint: The dependency constraints to ignore
             name: The dependency names to include
             group: The dependency groups to include
         """
 
         if latest:
             logging.info("Updating dependencies to their latest version")
+            dependencies = self.filter_dependencies(
+                self.dependencies,
+                without_constraint,
+                name,
+                group,
+            )
             # sort dependencies into their groups and add them at once in order
             # to avoid version solver error in case dependencies depend on each
             # other
             groups = {}
-            for dependency in self.dependencies:
-                if skip_exact and dependency.constraint == Constraint.EXACT:
-                    # skip dep with an exact version
-                    continue
-                if name and dependency.name not in name:
-                    # skip dep whom name is NOT in the provided name list
-                    continue
-                if group and dependency.group not in group:
-                    # skip dep whom group is NOT in the provided group list
-                    continue
+            for dependency in dependencies:
                 if isinstance(dependency.version, str):
                     groups[dependency.group] = groups.get(
                         dependency.group, []
@@ -248,18 +280,14 @@ class Pyproject:
             self.__run_poetry_update()
 
         # bump versions in pyproject
+        bumped_dependencies = self.filter_dependencies(
+            self.bumped_dependencies,
+            without_constraint,
+            name,
+            group,
+        )
         table = self.pyproject["tool"]["poetry"]
-        for dependency in self.bumped_dependencies:
-            if skip_exact and dependency.constraint == Constraint.EXACT:
-                # skip dep with an exact version
-                continue
-            if name and dependency.name not in name:
-                # skip dep whom name is NOT in the provided name list
-                continue
-            if group and dependency.group not in group:
-                # skip dep whom group is NOT in the provided group list
-                continue
-
+        for dependency in bumped_dependencies:
             if dependency.group == "default":
                 table["dependencies"][dependency.name] = dependency.version
             elif (

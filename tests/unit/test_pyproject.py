@@ -5,6 +5,7 @@ from unittest.mock import call
 from pytest_mock import MockerFixture
 
 from poetryup.core.pyproject import Pyproject
+from poetryup.models.dependency import Constraint, Dependency
 
 pyproject_str = Path(
     os.path.join(
@@ -106,7 +107,10 @@ def test_update_dependencies_latest_skip_exact(
         "_Pyproject__run_poetry_add",
         return_value=None,
     )
-    pyproject.update_dependencies(latest=True, skip_exact=True)
+    pyproject.update_dependencies(
+        latest=True,
+        without_constraint=[Constraint.EXACT],
+    )
 
     calls = [
         call(
@@ -193,28 +197,24 @@ def test_search_dependency(
     mock_poetry_commands,
 ) -> None:
     pyproject = Pyproject(pyproject_str)
-    name = pyproject.dependencies[0].name
-    assert (
-        pyproject.search_dependency(
-            pyproject.dependencies,
-            name,
-        )
-        is not None
+    expected = pyproject.dependencies[0]
+    actual = pyproject.search_dependency(
+        pyproject.dependencies,
+        expected.name,
     )
+    assert actual == expected
 
 
 def test_search_dependency_by_normalized_name(
     mock_poetry_commands,
 ) -> None:
     pyproject = Pyproject(pyproject_str)
-    normalized_name = pyproject.dependencies[0].normalized_name
-    assert (
-        pyproject.search_dependency(
-            pyproject.dependencies,
-            normalized_name,
-        )
-        is not None
+    expected = pyproject.dependencies[0]
+    actual = pyproject.search_dependency(
+        pyproject.dependencies,
+        expected.normalized_name,
     )
+    assert actual == expected
 
 
 def test_search_dependency_non_existent(
@@ -228,6 +228,78 @@ def test_search_dependency_non_existent(
         )
         is None
     )
+
+
+def test_filter_dependencies_without_constraint(
+    mock_poetry_commands,
+) -> None:
+    dependencies = [
+        Dependency(
+            name="poetryup_exact",
+            version="0.1.0",
+            group="default",
+        ),
+        Dependency(
+            name="poetryup_caret",
+            version="^0.1.0",
+            group="dev",
+        ),
+    ]
+    pyproject = Pyproject(pyproject_str)
+    expected = dependencies[1]
+    actual = pyproject.filter_dependencies(
+        dependencies,
+        without_constraint=[Constraint.EXACT],
+    )
+    assert actual == [expected]
+
+
+def test_filter_dependencies_name(
+    mock_poetry_commands,
+) -> None:
+    dependencies = [
+        Dependency(
+            name="poetryup_exact",
+            version="0.1.0",
+            group="default",
+        ),
+        Dependency(
+            name="poetryup_caret",
+            version="^0.1.0",
+            group="dev",
+        ),
+    ]
+    pyproject = Pyproject(pyproject_str)
+    expected = dependencies[0]
+    actual = pyproject.filter_dependencies(
+        dependencies,
+        name=[expected.name],
+    )
+    assert actual == [expected]
+
+
+def test_filter_dependencies_group(
+    mock_poetry_commands,
+) -> None:
+    dependencies = [
+        Dependency(
+            name="poetryup_exact",
+            version="0.1.0",
+            group="default",
+        ),
+        Dependency(
+            name="poetryup_caret",
+            version="^0.1.0",
+            group="dev",
+        ),
+    ]
+    pyproject = Pyproject(pyproject_str)
+    expected = dependencies[0]
+    actual = pyproject.filter_dependencies(
+        dependencies,
+        group=[expected.group],
+    )
+    assert actual == [expected]
 
 
 def test_dumps(

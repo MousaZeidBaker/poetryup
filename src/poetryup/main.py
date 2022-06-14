@@ -4,6 +4,7 @@ import logging
 import os
 import subprocess
 from pathlib import Path
+from typing import List
 
 import typer
 
@@ -24,6 +25,14 @@ def poetryup(
         default=False,
         help="Whether to skip dependencies with an exact version.",
     ),
+    name: List[str] = typer.Option(
+        default=[],
+        help="The dependency names to include.",
+    ),
+    group: List[str] = typer.Option(
+        default=[],
+        help="The dependency groups to include.",
+    ),
 ):
     """Update dependencies and bump their version in pyproject.toml file"""
 
@@ -35,7 +44,7 @@ def poetryup(
         )
 
     pyproject = Pyproject(pyproject_str)
-    pyproject.update_dependencies(latest, skip_exact)
+    pyproject.update_dependencies(latest, skip_exact, name, group)
     Path("pyproject.toml").write_text(pyproject.dumps())
     # refresh the lock file after changes in pyproject.toml
     subprocess.run(["poetry", "lock", "--no-update"])

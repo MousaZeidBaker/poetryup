@@ -205,12 +205,16 @@ class Pyproject:
         self,
         latest: bool = False,
         skip_exact: bool = False,
+        name: List[str] = [],
+        group: List[str] = [],
     ) -> None:
         """Update dependencies and bump their version in pyproject
 
         Args:
             latest: Whether to update dependencies to their latest version
             skip_exact: Whether to skip dependencies with an exact version
+            name: The dependency names to include
+            group: The dependency groups to include
         """
 
         if latest:
@@ -221,7 +225,13 @@ class Pyproject:
             groups = {}
             for dependency in self.dependencies:
                 if skip_exact and dependency.constraint == Constraint.EXACT:
-                    # skip dependencies with an exact version
+                    # skip dep with an exact version
+                    continue
+                if name and dependency.name not in name:
+                    # skip dep whom name is NOT in the provided name list
+                    continue
+                if group and dependency.group not in group:
+                    # skip dep whom group is NOT in the provided group list
                     continue
                 if isinstance(dependency.version, str):
                     groups[dependency.group] = groups.get(

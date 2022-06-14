@@ -250,6 +250,16 @@ class Pyproject:
         # bump versions in pyproject
         table = self.pyproject["tool"]["poetry"]
         for dependency in self.bumped_dependencies:
+            if skip_exact and dependency.constraint == Constraint.EXACT:
+                # skip dep with an exact version
+                continue
+            if name and dependency.name not in name:
+                # skip dep whom name is NOT in the provided name list
+                continue
+            if group and dependency.group not in group:
+                # skip dep whom group is NOT in the provided group list
+                continue
+
             if dependency.group == "default":
                 table["dependencies"][dependency.name] = dependency.version
             elif (

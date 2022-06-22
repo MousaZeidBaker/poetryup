@@ -35,6 +35,12 @@ Update all dependencies to their latest available version
 poetryup --latest
 ```
 
+Update all dependencies to their latest available version except for packages
+with an exact version
+```shell
+poetryup --latest --skip-exact
+```
+
 Update dependencies in the `default` and `dev` group to their latest available version
 ```shell
 poetryup --latest --group defaut --group dev

@@ -36,7 +36,7 @@ poetryup --latest
 ```
 
 Update all dependencies to their latest available version except for packages
-pinned to exact versions in `pyproject.toml`
+with an exact version
 ```shell
 poetryup --latest --skip-exact
 ```

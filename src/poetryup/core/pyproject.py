@@ -307,7 +307,7 @@ class Pyproject:
                     dependency.name
                 ] = dependency.version
             else:
-                logging.info(f"Couldn't bump dependency '{dependency.name}'")
+                logging.warning(f"Couldn't bump dependency '{dependency.name}'")
 
     @staticmethod
     def __get_poetry_version() -> str:
@@ -316,6 +316,7 @@ class Pyproject:
         Returns:
             The poetry version installed
         """
+        logging.debug("Execute: 'poetry --version'")
 
         if sys.version_info < (3, 7):
             return subprocess.check_output(
@@ -341,6 +342,7 @@ class Pyproject:
         Returns:
             The output from the poetry show command
         """
+        logging.debug("Execute: 'poetry show --tree'")
 
         if sys.version_info < (3, 7):
             return subprocess.check_output(
@@ -357,6 +359,7 @@ class Pyproject:
     def __run_poetry_update() -> None:
         """Run poetry update command"""
 
+        logging.debug("Execute: 'poetry update'")
         subprocess.run(["poetry", "update"])
 
     def __run_poetry_add(
@@ -372,10 +375,13 @@ class Pyproject:
         """
 
         if group is None or group == "default":
+            logging.debug(f"Execute: 'poetry add {packages}'")
             subprocess.run(["poetry", "add", *packages])
         elif group == "dev" and self.poetry_version < version_.parse("1.2.0"):
+            logging.debug(f"Execute: 'poetry add {packages} --{group}'")
             subprocess.run(["poetry", "add", *packages, f"--{group}"])
         elif self.poetry_version >= version_.parse("1.2.0"):
+            logging.debug(f"Execute: 'poetry add {packages} --group {group}'")
             subprocess.run(["poetry", "add", *packages, f"--group {group}"])
         else:
-            logging.info(f"Couldn't add package(s) '{packages}'")
+            logging.warning(f"Couldn't add package(s) '{packages}'")

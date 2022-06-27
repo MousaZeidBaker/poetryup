@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import logging
-import os
 import subprocess
 from pathlib import Path
 from typing import List
@@ -11,9 +10,16 @@ import typer
 from poetryup.core.pyproject import Pyproject
 from poetryup.models.dependency import Constraint
 
-logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO").upper())
-
 app = typer.Typer(add_completion=False)
+
+
+def setup_logging(verbosity):
+    level = logging.WARNING
+    if verbosity == 1:
+        level = logging.INFO
+    elif verbosity > 1:
+        level = logging.DEBUG
+    logging.basicConfig(level=level)
 
 
 @app.command()
@@ -34,8 +40,16 @@ def poetryup(
         default=[],
         help="The dependency groups to include.",
     ),
+    verbose: int = typer.Option(
+        0,
+        "--verbose",
+        "-v",
+        count=True,
+        help='Increase verbosity of messages: "-v" for info, "-vv" for debug.',
+    ),
 ):
     """Update dependencies and bump their version in pyproject.toml file"""
+    setup_logging(verbose)
 
     try:
         pyproject_str = Path("pyproject.toml").read_text()
@@ -49,6 +63,7 @@ def poetryup(
     pyproject.update_dependencies(latest, without_constraint, name, group)
     Path("pyproject.toml").write_text(pyproject.dumps())
     # refresh the lock file after changes in pyproject.toml
+    logging.debug("Execute: 'poetry lock --no-update'")
     subprocess.run(["poetry", "lock", "--no-update"])
 
 

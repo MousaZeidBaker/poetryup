@@ -43,7 +43,7 @@ poetryup --latest --skip-exact
 
 Update dependencies in the `default` and `dev` group to their latest available version
 ```shell
-poetryup --latest --group defaut --group dev
+poetryup --latest --group default --group dev
 ```
 
 Update the `foo` and `bar` dependencies to their latest available version

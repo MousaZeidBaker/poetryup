@@ -65,7 +65,11 @@ def poetryup(
     pyproject = Pyproject(pyproject_str)
     without_constraint = [Constraint.EXACT] if skip_exact else []
     pyproject.update_dependencies(
-        latest, without_constraint, name, exclude_name, group
+        latest,
+        without_constraint,
+        name,
+        exclude_name,
+        group,
     )
     Path("pyproject.toml").write_text(pyproject.dumps())
     # refresh the lock file after changes in pyproject.toml

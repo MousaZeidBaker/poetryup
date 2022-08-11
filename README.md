@@ -51,6 +51,11 @@ Update the `foo` and `bar` dependencies to their latest available version
 poetryup --latest --name foo --name bar
 ```
 
+Update all dependencies to their latest available version except the `foo` and `bar` dependencies
+```shell
+poetryup --latest --exclude-name foo --exclude-name bar
+```
+
 ## Automate Dependency Updates with GitHub Actions
 Use PoetryUp with GitHub actions to automate the process of updating
 dependencies, for reference see this project's [workflow

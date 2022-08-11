@@ -36,6 +36,10 @@ def poetryup(
         default=[],
         help="The dependency names to include.",
     ),
+    exclude_name: List[str] = typer.Option(
+        default=[],
+        help="The dependency names to exclude.",
+    ),
     group: List[str] = typer.Option(
         default=[],
         help="The dependency groups to include.",
@@ -60,7 +64,9 @@ def poetryup(
 
     pyproject = Pyproject(pyproject_str)
     without_constraint = [Constraint.EXACT] if skip_exact else []
-    pyproject.update_dependencies(latest, without_constraint, name, group)
+    pyproject.update_dependencies(
+        latest, without_constraint, name, exclude_name, group
+    )
     Path("pyproject.toml").write_text(pyproject.dumps())
     # refresh the lock file after changes in pyproject.toml
     logging.debug("Execute: 'poetry lock --no-update'")

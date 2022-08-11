@@ -206,6 +206,7 @@ class Pyproject:
         dependencies: List[Dependency],
         without_constraints: List[Constraint] = [],
         names: List[str] = [],
+        exclude_names: List[str] = [],
         groups: List[str] = [],
     ) -> Union[Dependency, None]:
         """Search for a dependency by name given a list of dependencies
@@ -214,6 +215,7 @@ class Pyproject:
             dependencies: A list of dependencies to filter
             without_constraints: The dependency constraints to ignore
             names: The dependency names to include
+            exclude_names: The dependency names to exclude
             groups: The dependency groups to include
 
         Returns:
@@ -230,6 +232,11 @@ class Pyproject:
         if names:
             # remove deps whom name is NOT in the provided name list
             dependencies = [x for x in dependencies if x.name in names]
+        if exclude_names:
+            # remove deps whom name is in the provided exclude_names list
+            dependencies = [
+                x for x in dependencies if x.name not in exclude_names
+            ]
         if groups:
             # remove deps whom group is NOT in the provided group list
             dependencies = [x for x in dependencies if x.group in groups]
@@ -241,6 +248,7 @@ class Pyproject:
         latest: bool = False,
         without_constraints: List[Constraint] = [],
         names: List[str] = [],
+        exclude_names: List[str] = [],
         groups: List[str] = [],
     ) -> None:
         """Update dependencies and bump their version in pyproject
@@ -249,6 +257,7 @@ class Pyproject:
             latest: Whether to update dependencies to their latest version
             without_constraints: The dependency constraints to ignore
             names: The dependency names to include
+            exclude_names: The dependency names to exclude
             groups: The dependency groups to include
         """
 
@@ -258,6 +267,7 @@ class Pyproject:
                 self.dependencies,
                 without_constraints,
                 names,
+                exclude_names,
                 groups,
             )
             # sort dependencies into their groups and add them at once in order
@@ -284,6 +294,7 @@ class Pyproject:
             self.bumped_dependencies,
             without_constraints,
             names,
+            exclude_names,
             groups,
         )
         table = self.pyproject["tool"]["poetry"]

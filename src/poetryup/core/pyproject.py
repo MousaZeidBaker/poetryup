@@ -6,7 +6,6 @@ from typing import Dict, List, Optional, Union
 
 import tomlkit
 from packaging import version as version_
-from typer import Exit
 
 from poetryup.models.dependency import Constraint, Dependency
 
@@ -367,11 +366,12 @@ class Pyproject:
             capture_output=True,
         ).stdout.decode()
 
-    def __run_poetry_update(self) -> None:
+    @staticmethod
+    def __run_poetry_update() -> None:
         """Run poetry update command"""
 
         logging.debug("Execute: 'poetry update'")
-        self.__cmd_run(["poetry", "update"])
+        subprocess.run(["poetry", "update"])
 
     def __run_poetry_add(
         self,
@@ -387,17 +387,12 @@ class Pyproject:
 
         if group is None or group == "default":
             logging.debug(f"Execute: 'poetry add {packages}'")
-            self.__cmd_run(["poetry", "add", *packages])
+            subprocess.run(["poetry", "add", *packages])
         elif group == "dev" and self.poetry_version < version_.parse("1.2.0"):
             logging.debug(f"Execute: 'poetry add {packages} --{group}'")
-            self.__cmd_run(["poetry", "add", *packages, f"--{group}"])
+            subprocess.run(["poetry", "add", *packages, f"--{group}"])
         elif self.poetry_version >= version_.parse("1.2.0"):
             logging.debug(f"Execute: 'poetry add {packages} --group {group}'")
-            self.__cmd_run(["poetry", "add", *packages, f"--group {group}"])
+            subprocess.run(["poetry", "add", *packages, f"--group {group}"])
         else:
             logging.warning(f"Couldn't add package(s) '{packages}'")
-
-    def __cmd_run(self, cmd: List[str]) -> None:
-        proc = subprocess.run(cmd, check=False)
-        if proc.returncode != 0:
-            raise Exit(proc.returncode)

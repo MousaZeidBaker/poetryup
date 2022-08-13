@@ -193,6 +193,41 @@ def test_update_dependencies_latest_with_specific_name(
     mock.assert_has_calls(calls)
 
 
+def test_update_dependencies_latest_with_exclude_names(
+    mock_poetry_commands,
+    mocker: MockerFixture,
+) -> None:
+    pyproject = Pyproject(pyproject_str)
+    mock = mocker.patch.object(
+        pyproject,
+        "_Pyproject__run_poetry_add",
+        return_value=None,
+    )
+    pyproject.update_dependencies(
+        latest=True, exclude_names=["poetryup_caret", "poetryup"]
+    )
+
+    calls = [
+        call(
+            packages=[
+                "poetryup_tilde@latest",
+                "poetryup_wildcard@latest",
+                "poetryup_inequality_greater_than@latest",
+                "poetryup_inequality_greater_than_or_equal@latest",
+                "poetryup_inequality_less_than@latest",
+                "poetryup_inequality_less_than_or_equal@latest",
+                "poetryup_inequality_not_equal@latest",
+                "poetryup_exact@latest",
+                "poetryup_multiple_requirements@latest",
+                "poetryup_underscore@latest",
+                "Poetryup_Capital@latest",
+            ],
+            group="main",
+        ),
+    ]
+    mock.assert_has_calls(calls)
+
+
 def test_search_dependency(
     mock_poetry_commands,
 ) -> None:

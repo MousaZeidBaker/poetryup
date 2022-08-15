@@ -6,9 +6,14 @@ from typing import Dict, List, Optional, Union
 
 import tomlkit
 from packaging import version as version_
-from typer import Exit
 
 from poetryup.models.dependency import Constraint, Dependency
+
+
+class PoetryError(Exception):
+    def __init__(self, cmd, return_code) -> None:
+        self.cmd = cmd
+        self.return_code = return_code
 
 
 class Pyproject:
@@ -389,4 +394,4 @@ class Pyproject:
     def __cmd_run(self, cmd: List[str]) -> None:
         proc = subprocess.run(cmd, check=False)
         if proc.returncode != 0:
-            raise Exit(proc.returncode)
+            raise PoetryError(cmd=" ".join(cmd), return_code=proc.returncode)

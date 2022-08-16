@@ -36,6 +36,10 @@ def poetryup(
         default=[],
         help="The dependency names to include.",
     ),
+    exclude_name: List[str] = typer.Option(
+        default=[],
+        help="The dependency names to exclude.",
+    ),
     group: List[str] = typer.Option(
         default=[],
         help="The dependency groups to include.",
@@ -61,7 +65,13 @@ def poetryup(
     pyproject = Pyproject(pyproject_str)
     without_constraint = [Constraint.EXACT] if skip_exact else []
     try:
-        pyproject.update_dependencies(latest, without_constraint, name, group)
+        pyproject.update_dependencies(
+            latest,
+            without_constraint,
+            name,
+            exclude_name,
+            group,
+        )
     except PoetryError as e:
         logging.debug(
             'Execute "%s" failed with exit-code: %s', e.cmd, e.return_code

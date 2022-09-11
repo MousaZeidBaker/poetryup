@@ -7,7 +7,8 @@ from typing import List
 
 import typer
 
-from poetryup.core.pyproject import PoetryError, Pyproject
+from poetryup.core.cmd import CommandError
+from poetryup.core.pyproject import Pyproject
 from poetryup.models.dependency import Constraint
 
 app = typer.Typer(add_completion=False)
@@ -64,6 +65,7 @@ def poetryup(
 
     pyproject = Pyproject(pyproject_str)
     without_constraint = [Constraint.EXACT] if skip_exact else []
+
     try:
         pyproject.update_dependencies(
             latest,
@@ -72,11 +74,12 @@ def poetryup(
             exclude_name,
             group,
         )
-    except PoetryError as e:
+    except CommandError as e:
         logging.debug(
-            'Execute "%s" failed with exit-code: %s', e.cmd, e.return_code
+            f"Command '{e.cmd}' failed with exit code '{e.return_code}'"
         )
         raise typer.Exit(e.return_code)
+
     Path("pyproject.toml").write_text(pyproject.dumps())
     # refresh the lock file after changes in pyproject.toml
     logging.debug("Execute: 'poetry lock --no-update'")

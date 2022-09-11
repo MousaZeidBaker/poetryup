@@ -19,7 +19,7 @@ def cmd_run(cmd: List) -> str:
         The output from the command
 
     Raises:
-        CommandError when command exists with non-zer exit code
+        CommandError when command exists with non-zero exit code
     """
 
     logging.debug(f"Run command: '{' '.join(cmd)}'")

@@ -1,5 +1,6 @@
 import logging
 import subprocess
+from typing import List
 
 
 class CommandError(Exception):
@@ -8,7 +9,7 @@ class CommandError(Exception):
         self.return_code = return_code
 
 
-def cmd_run(*cmd) -> str:
+def cmd_run(cmd: List) -> str:
     """Run command with subprocess
 
     Args:
@@ -18,16 +19,19 @@ def cmd_run(*cmd) -> str:
         The output from the command
 
     Raises:
-        CommandError when command return code isn't  0
+        CommandError when command exists with non-zer exit code
     """
 
-    logging.debug(f"Run command: '{cmd}'")
+    logging.debug(f"Run command: '{' '.join(cmd)}'")
     process = subprocess.run(
         cmd,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
-        text=True,
     )
     if process.returncode != 0:
+        logging.debug(
+            f"Command '{' '.join(cmd)}' exited with non-zero"
+            f"exit code '{process.return_code}'"
+        )
         raise CommandError(cmd="".join(cmd), return_code=process.returncode)
-    return process.stdout
+    return process.stdout.decode()

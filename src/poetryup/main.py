@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 
 import logging
-import subprocess
 from pathlib import Path
 from typing import List
 
 import typer
 
-from poetryup.core.cmd import CommandError
+from poetryup.core.cmd import CommandError, cmd_run
 from poetryup.core.pyproject import Pyproject
 from poetryup.models.dependency import Constraint
 
@@ -75,15 +74,11 @@ def poetryup(
             group,
         )
     except CommandError as e:
-        logging.debug(
-            f"Command '{e.cmd}' failed with exit code '{e.return_code}'"
-        )
         raise typer.Exit(e.return_code)
 
     Path("pyproject.toml").write_text(pyproject.dumps())
     # refresh the lock file after changes in pyproject.toml
-    logging.debug("Execute: 'poetry lock --no-update'")
-    subprocess.run(["poetry", "lock", "--no-update"])
+    cmd_run(["poetry", "lock", "--no-update"])
 
 
 if __name__ == "__main__":

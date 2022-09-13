@@ -1,12 +1,11 @@
 import logging
 import re
-import subprocess
-import sys
 from typing import Dict, List, Optional, Union
 
 import tomlkit
 from packaging import version as version_
 
+from poetryup.core.cmd import cmd_run
 from poetryup.models.dependency import Constraint, Dependency
 
 
@@ -327,24 +326,10 @@ class Pyproject:
         Returns:
             The poetry version installed
         """
-        logging.debug("Execute: 'poetry --version'")
 
-        if sys.version_info < (3, 7):
-            return subprocess.check_output(
-                ["poetry", "--version"],
-                encoding="UTF-8",
-            )
-
-        return (
-            subprocess.run(
-                ["poetry", "--version"],
-                capture_output=True,
-            )
-            .stdout.decode()  # command returns: 'Poetry version x.y.z'
-            .rsplit(" ", 1)
-            .pop()
-            .strip()
-        )
+        output = cmd_run(["poetry", "--version"])
+        # output is: 'Poetry version x.y.z'
+        return output.rsplit(" ", 1).pop().strip()
 
     @staticmethod
     def __run_poetry_show() -> str:
@@ -353,26 +338,16 @@ class Pyproject:
         Returns:
             The output from the poetry show command
         """
-        logging.debug("Execute: 'poetry show --tree'")
 
-        if sys.version_info < (3, 7):
-            return subprocess.check_output(
-                ["poetry", "show", "--tree"],
-                encoding="UTF-8",
-            )
-
-        return subprocess.run(
-            ["poetry", "show", "--tree"],
-            capture_output=True,
-        ).stdout.decode()
+        return cmd_run(["poetry", "show", "--tree"])
 
     @staticmethod
     def __run_poetry_update() -> None:
         """Run poetry update command"""
 
-        logging.debug("Execute: 'poetry update'")
-        subprocess.run(["poetry", "update"])
+        cmd_run(["poetry", "update"])
 
+    @staticmethod
     def __run_poetry_add(
         self,
         packages: List[str],
@@ -386,13 +361,10 @@ class Pyproject:
         """
 
         if group is None or group == "default":
-            logging.debug(f"Execute: 'poetry add {packages}'")
-            subprocess.run(["poetry", "add", *packages])
+            cmd_run(["poetry", "add", *packages])
         elif group == "dev" and self.poetry_version < version_.parse("1.2.0"):
-            logging.debug(f"Execute: 'poetry add {packages} --{group}'")
-            subprocess.run(["poetry", "add", *packages, f"--{group}"])
+            cmd_run(["poetry", "add", *packages, f"--{group}"])
         elif self.poetry_version >= version_.parse("1.2.0"):
-            logging.debug(f"Execute: 'poetry add {packages} --group {group}'")
-            subprocess.run(["poetry", "add", *packages, f"--group {group}"])
+            cmd_run(["poetry", "add", *packages, f"--group {group}"])
         else:
             logging.warning(f"Couldn't add package(s) '{packages}'")

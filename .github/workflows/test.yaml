@@ -42,7 +42,7 @@ jobs:
         run: |
           source $(poetry env info --path)/bin/activate # activate virtual environment
           pytest tests
-          poetryup
+          poetryup -vv
 
       - name: Validate Project Version
         run: |

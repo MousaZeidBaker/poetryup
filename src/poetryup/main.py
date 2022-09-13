@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 import logging
-import subprocess
 from pathlib import Path
 from typing import List
 
 import typer
 
+from poetryup.core.cmd import CommandError, cmd_run
 from poetryup.core.pyproject import Pyproject
 from poetryup.models.dependency import Constraint
 
@@ -64,17 +64,21 @@ def poetryup(
 
     pyproject = Pyproject(pyproject_str)
     without_constraint = [Constraint.EXACT] if skip_exact else []
-    pyproject.update_dependencies(
-        latest,
-        without_constraint,
-        name,
-        exclude_name,
-        group,
-    )
+
+    try:
+        pyproject.update_dependencies(
+            latest,
+            without_constraint,
+            name,
+            exclude_name,
+            group,
+        )
+    except CommandError as e:
+        raise typer.Exit(e.return_code)
+
     Path("pyproject.toml").write_text(pyproject.dumps())
     # refresh the lock file after changes in pyproject.toml
-    logging.debug("Execute: 'poetry lock --no-update'")
-    subprocess.run(["poetry", "lock", "--no-update"])
+    cmd_run(["poetry", "lock", "--no-update"])
 
 
 if __name__ == "__main__":

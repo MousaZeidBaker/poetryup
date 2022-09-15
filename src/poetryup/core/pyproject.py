@@ -327,7 +327,7 @@ class Pyproject:
             The poetry version installed
         """
 
-        output = cmd_run(["poetry", "--version"])
+        output = cmd_run(["poetry", "--version"], capture_output=True)
         # output is: 'Poetry version x.y.z'
         return output.rsplit(" ", 1).pop().strip()
 
@@ -339,7 +339,7 @@ class Pyproject:
             The output from the poetry show command
         """
 
-        return cmd_run(["poetry", "show", "--tree"])
+        return cmd_run(["poetry", "show", "--tree"], capture_output=True)
 
     @staticmethod
     def __run_poetry_update() -> None:
@@ -347,7 +347,6 @@ class Pyproject:
 
         cmd_run(["poetry", "update"])
 
-    @staticmethod
     def __run_poetry_add(
         self,
         packages: List[str],

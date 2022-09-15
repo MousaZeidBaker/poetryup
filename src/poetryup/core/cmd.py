@@ -9,11 +9,12 @@ class CommandError(Exception):
         self.return_code = return_code
 
 
-def cmd_run(cmd: List) -> str:
+def cmd_run(cmd: List, capture_output: bool = False) -> str:
     """Run command with subprocess
 
     Args:
         cmd: The command to run
+        capture_output: Capture process output
 
     Returns:
         The output from the command
@@ -25,13 +26,13 @@ def cmd_run(cmd: List) -> str:
     logging.debug(f"Run command: '{' '.join(cmd)}'")
     process = subprocess.run(
         cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
+        stdout=subprocess.PIPE if capture_output else None,
+        stderr=subprocess.STDOUT if capture_output else None,
     )
     if process.returncode != 0:
         logging.debug(
             f"Command '{' '.join(cmd)}' exited with non-zero"
-            f"exit code '{process.return_code}'"
+            f"exit code '{process.returncode}'"
         )
         raise CommandError(cmd="".join(cmd), return_code=process.returncode)
-    return process.stdout.decode()
+    return process.stdout.decode() if capture_output else None

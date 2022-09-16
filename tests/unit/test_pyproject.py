@@ -57,6 +57,10 @@ def test_update_dependencies(
     }
     assert table["poetryup_underscore"] == "^0.2.0"
     assert table["Poetryup_Capital"] == "^0.2.0"
+    assert table["poetryup_extras"] == {
+        "version": "^0.2.0",
+        "extras": ["foo", "bar"],
+    }
 
 
 def test_update_dependencies_latest(
@@ -90,6 +94,7 @@ def test_update_dependencies_latest(
                 "poetryup_multiple_requirements@latest",
                 "poetryup_underscore@latest",
                 "Poetryup_Capital@latest",
+                "poetryup_extras[foo,bar]@latest",
             ],
             group="main",
         ),
@@ -131,6 +136,7 @@ def test_update_dependencies_latest_skip_exact(
                 "poetryup_multiple_requirements@latest",
                 "poetryup_underscore@latest",
                 "Poetryup_Capital@latest",
+                "poetryup_extras[foo,bar]@latest",
             ],
             group="main",
         ),
@@ -165,6 +171,7 @@ def test_update_dependencies_latest_with_specific_group(
                 "poetryup_multiple_requirements@latest",
                 "poetryup_underscore@latest",
                 "Poetryup_Capital@latest",
+                "poetryup_extras[foo,bar]@latest",
             ],
             group="main",
         ),
@@ -221,6 +228,7 @@ def test_update_dependencies_latest_with_exclude_names(
                 "poetryup_multiple_requirements@latest",
                 "poetryup_underscore@latest",
                 "Poetryup_Capital@latest",
+                "poetryup_extras[foo,bar]@latest",
             ],
             group="main",
         ),

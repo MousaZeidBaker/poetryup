@@ -1,5 +1,6 @@
 import logging
 import re
+from collections import defaultdict
 from typing import Dict, List, Optional, Union
 
 import tomlkit
@@ -272,12 +273,23 @@ class Pyproject:
             # sort dependencies into their groups and add them at once in order
             # to avoid version solver error in case dependencies depend on each
             # other
-            dependency_groups = {}
+            dependency_groups = defaultdict(list)
             for dependency in dependencies:
                 if isinstance(dependency.version, str):
-                    dependency_groups[dependency.group] = dependency_groups.get(
-                        dependency.group, []
-                    ) + [f"{dependency.name}@latest"]
+                    dependency_groups[dependency.group].append(
+                        f"{dependency.name}@latest"
+                    )
+                if (
+                    isinstance(dependency.version, dict)
+                    and "version" in dependency.version
+                ):
+                    # skip dependencies with restriction markers
+                    if {"markers", "python"} & set(dependency.version):
+                        continue
+                    extras = ",".join(dependency.version.get("extras", []))
+                    suffix = f"[{extras}]" if extras else ""
+                    package_version = f"{dependency.name}{suffix}@latest"
+                    dependency_groups[dependency.group].append(package_version)
 
             for group, packages in dependency_groups.items():
                 self.__run_poetry_add(

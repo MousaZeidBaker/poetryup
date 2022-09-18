@@ -31,6 +31,7 @@ def mock_poetry_commands(mocker: MockerFixture) -> None:
         "poetryup-git",
         "poetryup-underscore",
         "poetryup-capital",
+        "poetryup_extras",
     ]
     s = " 0.2.0 Some description\n└── some-package >=0.10.2,<0.11.0\n"
     return_value = s.join(dependencies) + s

@@ -41,6 +41,7 @@ poetryup_restricted = { version = "^0.1.0", python = "<3.7" }
 poetryup_git = { git = "https://github.com/MousaZeidBaker/poetryup.git" }
 poetryup_underscore = "^0.1.0"
 Poetryup_Capital = "^0.1.0"
+poetryup_extras = { version = "^0.1.0", extras = ["foo", "bar"]}
 
 [tool.poetry.group.dev.dependencies]
 

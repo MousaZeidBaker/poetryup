@@ -341,7 +341,7 @@ class Pyproject:
 
         output = cmd_run(["poetry", "--version"], capture_output=True)
         # output is: 'Poetry version x.y.z'
-        return output.rsplit(" ", 1).pop().strip()
+        return output.rsplit(" ", 1).pop().strip().replace(")", "")
 
     @staticmethod
     def __run_poetry_show() -> str:
@@ -376,6 +376,6 @@ class Pyproject:
         elif group == "dev" and self.poetry_version < version_.parse("1.2.0"):
             cmd_run(["poetry", "add", *packages, f"--{group}"])
         elif self.poetry_version >= version_.parse("1.2.0"):
-            cmd_run(["poetry", "add", *packages, f"--group {group}"])
+            cmd_run(["poetry", "add", *packages, "--group", group])
         else:
             logging.warning(f"Couldn't add package(s) '{packages}'")

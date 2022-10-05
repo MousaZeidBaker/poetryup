@@ -341,7 +341,7 @@ class Pyproject:
 
         output = cmd_run(["poetry", "--version"], capture_output=True)
         # output is: 'Poetry version x.y.z'
-        return output.rsplit(" ", 1).pop().strip().replace(")","")
+        return output.rsplit(" ", 1).pop().strip().replace(")", "")
 
     @staticmethod
     def __run_poetry_show() -> str:

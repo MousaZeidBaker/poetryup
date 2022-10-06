@@ -1,18 +1,12 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from poetryup.core.pyproject import Pyproject
+from poetryup.core.pyproject import Poetry
 
 
 @pytest.fixture(scope="function")
 def mock_poetry_commands(mocker: MockerFixture) -> None:
     """Mock poetry commands"""
-
-    mocker.patch.object(
-        Pyproject,
-        "_Pyproject__get_poetry_version",
-        return_value="1.1.0",
-    )
 
     dependencies = [
         "poetryup",
@@ -37,19 +31,19 @@ def mock_poetry_commands(mocker: MockerFixture) -> None:
     return_value = s.join(dependencies) + s
 
     mocker.patch.object(
-        Pyproject,
-        "_Pyproject__run_poetry_show",
+        Poetry,
+        "show",
         return_value=return_value,
     )
 
     mocker.patch.object(
-        Pyproject,
-        "_Pyproject__run_poetry_update",
+        Poetry,
+        "update",
         return_value=None,
     )
 
     mocker.patch.object(
-        Pyproject,
-        "_Pyproject__run_poetry_add",
+        Poetry,
+        "add",
         return_value=None,
     )

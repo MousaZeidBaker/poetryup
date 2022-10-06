@@ -17,7 +17,7 @@ class Poetry:
         # output is: 'Poetry (version x.y.z)'
         return output.rsplit(" ", 1).pop().strip().replace(")", "")
 
-    def show() -> str:
+    def show(self) -> str:
         """Run poetry show command
 
         Returns:
@@ -26,7 +26,7 @@ class Poetry:
 
         return cmd_run(["poetry", "show", "--tree"], capture_output=True)
 
-    def update() -> None:
+    def update(self) -> None:
         """Run poetry update command"""
 
         cmd_run(["poetry", "update"])

@@ -1,12 +1,11 @@
 import logging
 import re
 from collections import defaultdict
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Union
 
 import tomlkit
-from packaging import version as version_
 
-from poetryup.core.cmd import cmd_run
+from poetryup.core.poetry import Poetry
 from poetryup.models.dependency import Constraint, Dependency
 
 
@@ -23,7 +22,7 @@ class Pyproject:
 
     def __init__(self, pyproject_str: str) -> None:
         self.pyproject = tomlkit.loads(pyproject_str)
-        self.poetry_version = version_.parse(self.__get_poetry_version())
+        self.poetry = Poetry()
         self._dependencies = None  # caches the dependencies
 
     @property
@@ -76,7 +75,7 @@ class Pyproject:
         """The pyproject dependencies with their lock version"""
 
         # run poetry show to get currently installed dependencies
-        output = self.__run_poetry_show()
+        output = self.poetry.show()
 
         # create dependencies from each line of the output
         pattern = re.compile("^[a-zA-Z-]+")
@@ -292,13 +291,13 @@ class Pyproject:
                     dependency_groups[dependency.group].append(package_version)
 
             for group, packages in dependency_groups.items():
-                self.__run_poetry_add(
+                self.poetry.add(
                     packages=packages,
                     group=group,
                 )
         else:
             logging.info("Running poetry update command")
-            self.__run_poetry_update()
+            self.poetry.update()
 
         # bump versions in pyproject
         bumped_dependencies = self.filter_dependencies(
@@ -330,52 +329,3 @@ class Pyproject:
                 ] = dependency.version
             else:
                 logging.warning(f"Couldn't bump dependency '{dependency.name}'")
-
-    @staticmethod
-    def __get_poetry_version() -> str:
-        """Return the installed poetry version
-
-        Returns:
-            The poetry version installed
-        """
-
-        output = cmd_run(["poetry", "--version"], capture_output=True)
-        # output is: 'Poetry version x.y.z'
-        return output.rsplit(" ", 1).pop().strip().replace(")", "")
-
-    @staticmethod
-    def __run_poetry_show() -> str:
-        """Run poetry show command
-
-        Returns:
-            The output from the poetry show command
-        """
-
-        return cmd_run(["poetry", "show", "--tree"], capture_output=True)
-
-    @staticmethod
-    def __run_poetry_update() -> None:
-        """Run poetry update command"""
-
-        cmd_run(["poetry", "update"])
-
-    def __run_poetry_add(
-        self,
-        packages: List[str],
-        group: Optional[str],
-    ) -> None:
-        """Run poetry add command
-
-        Args:
-            package: The package(s) to add
-            group: The group the package(s) should be added to
-        """
-
-        if group is None or group == "default":
-            cmd_run(["poetry", "add", *packages])
-        elif group == "dev" and self.poetry_version < version_.parse("1.2.0"):
-            cmd_run(["poetry", "add", *packages, f"--{group}"])
-        elif self.poetry_version >= version_.parse("1.2.0"):
-            cmd_run(["poetry", "add", *packages, "--group", group])
-        else:
-            logging.warning(f"Couldn't add package(s) '{packages}'")

@@ -4,7 +4,7 @@ from unittest.mock import call
 
 from pytest_mock import MockerFixture
 
-from poetryup.core.pyproject import Pyproject
+from poetryup.core.pyproject import Poetry, Pyproject
 from poetryup.models.dependency import Constraint, Dependency
 
 pyproject_str = Path(
@@ -67,12 +67,12 @@ def test_update_dependencies_latest(
     mock_poetry_commands,
     mocker: MockerFixture,
 ) -> None:
-    pyproject = Pyproject(pyproject_str)
     mock = mocker.patch.object(
-        pyproject,
-        "_Pyproject__run_poetry_add",
+        Poetry,
+        "add",
         return_value=None,
     )
+    pyproject = Pyproject(pyproject_str)
     pyproject.update_dependencies(latest=True)
 
     calls = [
@@ -106,12 +106,12 @@ def test_update_dependencies_latest_skip_exact(
     mock_poetry_commands,
     mocker: MockerFixture,
 ) -> None:
-    pyproject = Pyproject(pyproject_str)
     mock = mocker.patch.object(
-        pyproject,
-        "_Pyproject__run_poetry_add",
+        Poetry,
+        "add",
         return_value=None,
     )
+    pyproject = Pyproject(pyproject_str)
     pyproject.update_dependencies(
         latest=True,
         without_constraints=[Constraint.EXACT],
@@ -148,12 +148,12 @@ def test_update_dependencies_latest_with_specific_group(
     mock_poetry_commands,
     mocker: MockerFixture,
 ) -> None:
-    pyproject = Pyproject(pyproject_str)
     mock = mocker.patch.object(
-        pyproject,
-        "_Pyproject__run_poetry_add",
+        Poetry,
+        "add",
         return_value=None,
     )
+    pyproject = Pyproject(pyproject_str)
     pyproject.update_dependencies(latest=True, groups=["main"])
 
     calls = [
@@ -183,12 +183,12 @@ def test_update_dependencies_latest_with_specific_name(
     mock_poetry_commands,
     mocker: MockerFixture,
 ) -> None:
-    pyproject = Pyproject(pyproject_str)
     mock = mocker.patch.object(
-        pyproject,
-        "_Pyproject__run_poetry_add",
+        Poetry,
+        "add",
         return_value=None,
     )
+    pyproject = Pyproject(pyproject_str)
     pyproject.update_dependencies(latest=True, names=["poetryup"])
 
     calls = [
@@ -204,12 +204,12 @@ def test_update_dependencies_latest_with_exclude_names(
     mock_poetry_commands,
     mocker: MockerFixture,
 ) -> None:
-    pyproject = Pyproject(pyproject_str)
     mock = mocker.patch.object(
-        pyproject,
-        "_Pyproject__run_poetry_add",
+        Poetry,
+        "add",
         return_value=None,
     )
+    pyproject = Pyproject(pyproject_str)
     pyproject.update_dependencies(
         latest=True, exclude_names=["poetryup_caret", "poetryup"]
     )

@@ -10,12 +10,13 @@ class Poetry:
     """A helper class to run poetry commands"""
 
     @property
-    def version(self) -> str:
+    def version(self) -> version_.Version:
         """Return the installed poetry version"""
 
         output = cmd_run(["poetry", "--version"], capture_output=True)
         # output is: 'Poetry (version x.y.z)'
-        return output.rsplit(" ", 1).pop().strip().replace(")", "")
+        version = output.rsplit(" ", 1).pop().strip().replace(")", "")
+        return version_.parse(version)
 
     def show(self) -> str:
         """Run poetry show command

@@ -1,4 +1,3 @@
-from packaging import version as version_
 from pytest_mock import MockerFixture
 
 from poetryup.core.poetry import Poetry
@@ -12,7 +11,7 @@ def test_version_poetry_1_1_x(
         return_value="Poetry version 1.2.3",
     )
     poetry = Poetry()
-    assert poetry.version == version_.parse("1.2.3")
+    assert poetry.version.base_version == "1.2.3"
 
 
 def test_version_poetry_1_2_x(
@@ -23,4 +22,4 @@ def test_version_poetry_1_2_x(
         return_value="Poetry (version 1.2.3)",
     )
     poetry = Poetry()
-    assert poetry.version == version_.parse("1.2.3")
+    assert poetry.version.base_version == "1.2.3"

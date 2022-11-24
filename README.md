@@ -77,7 +77,7 @@ poetry shell
 
 Install dependencies
 ```shell
-poetry install --remove-untracked
+poetry install --sync
 ```
 
 Install git hooks

@@ -85,24 +85,14 @@ Install git hooks
 pre-commit install --hook-type pre-commit
 ```
 
+Run pre-commit hook against all files
+```shell
+pre-commit run --all-files
+```
+
 Run tests
 ```shell
 pytest tests
-```
-
-Run linter
-```shell
-flake8 .
-```
-
-Format code
-```shell
-black .
-```
-
-Sort imports
-```shell
-isort .
 ```
 
 Install current project from branch

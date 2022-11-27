@@ -26,7 +26,7 @@ def setup_logging(verbosity):
 def poetryup(
     latest: bool = typer.Option(
         default=False,
-        help="Whether to update",
+        help="Whether to update dependencies to their latest version.",
     ),
     skip_exact: bool = typer.Option(
         default=False,

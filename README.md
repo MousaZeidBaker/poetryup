@@ -56,46 +56,12 @@ Update all dependencies to their latest available version except the `foo` and `
 poetryup --latest --exclude-name foo --exclude-name bar
 ```
 
-## Automate Dependency Updates with GitHub Actions
-Use PoetryUp with GitHub actions to automate the process of updating
-dependencies, for reference see this project's [workflow
-configuration](https://github.com/MousaZeidBaker/poetryup/blob/master/.github/workflows/update-dependencies.yaml).
-
 ## Contributing
-Contributions are welcome via pull requests.
+
+Contributions are welcome! See the [Contributing Guide](https://github.com/MousaZeidBaker/poetryup/blob/master/CONTRIBUTING.md).
 
 ## Issues
+
 If you encounter any problems, please file an
-[issue](https://github.com/MousaZeidBaker/poetryup/issues) along with a detailed
-description.
-
-## Develop
-Activate virtual environment
-```shell
-poetry shell
-```
-
-Install dependencies
-```shell
-poetry install --sync
-```
-
-Install git hooks
-```shell
-pre-commit install --hook-type pre-commit
-```
-
-Run pre-commit hook against all files
-```shell
-pre-commit run --all-files
-```
-
-Run tests
-```shell
-pytest tests
-```
-
-Install current project from branch
-```shell
-poetry add git+https://github.com/MousaZeidBaker/poetryup.git#branch-name
-```
+[issue](https://github.com/MousaZeidBaker/poetryup/issues) along with a
+detailed description.

@@ -7,6 +7,11 @@
 [![pypi_v](https://img.shields.io/pypi/v/poetryup)](https://pypi.org/project/poetryup)
 [![pypi_dm](https://img.shields.io/pypi/dm/poetryup)](https://pypi.org/project/poetryup)
 
+
+> __Warning__
+>
+> This package has been deprecated and is no longer maintained, `poetryup` has moved to [poetry-plugin-up](https://github.com/MousaZeidBaker/poetry-plugin-up)
+
 PoetryUp updates dependencies and bumps their version in both `poetry.lock` as
 well as in `pyproject.toml` file. Dependencies version constraints are
 respected, unless the `--latest` flag is passed, in which case dependencies will

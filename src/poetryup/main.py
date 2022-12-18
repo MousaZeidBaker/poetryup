@@ -22,7 +22,7 @@ def setup_logging(verbosity):
     logging.basicConfig(level=level)
 
 
-@app.command()
+@app.command(deprecated=True)
 def poetryup(
     latest: bool = typer.Option(
         default=False,
